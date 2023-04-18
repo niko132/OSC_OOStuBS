@@ -66,6 +66,8 @@ private:
 	//                 code from the scan code and set modifier bits.
 	void get_ascii_code();
 
+	void sendByte(unsigned char byte);
+
 public:
 	// KEYBOARD_CONTROLLER: keyboard initialization: disables all LEDs and
 	//                      sets the repeat rate to maximum.

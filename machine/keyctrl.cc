@@ -11,7 +11,8 @@
 /* INCLUDES */
 
 #include "machine/keyctrl.h"
- 
+#include "device/cgastr.h"
+
 /* STATIC MEMBERS */
 
 unsigned char Keyboard_Controller::normal_tab[] = {
@@ -208,6 +209,17 @@ void Keyboard_Controller::get_ascii_code()
 	 }
 }
 
+void Keyboard_Controller::sendByte(unsigned char byte) {
+  int answer;
+  int retries = 500;
+  do {
+    int writeRetries = 500;
+    while ((ctrl_port.inb() & inpb) != 0 && --writeRetries >= 0) {}
+    data_port.outb(byte);
+    answer = data_port.inb();
+  } while (answer != 0xFA && --retries >= 0);
+}
+
 /* PUBLIC METHODS */
 
 // KEYBOARD_CONTROLLER: keyboard initialization: disables all LEDs and
@@ -216,6 +228,7 @@ void Keyboard_Controller::get_ascii_code()
 Keyboard_Controller::Keyboard_Controller() : ctrl_port(0x64), data_port(0x60)
 {
 	// disable all LEDs (many PCs enable Num Lock during the boot process)
+  leds = 0; // very important -> causes freeze when not initialized
 	set_led(led::caps_lock, false);
 	set_led(led::scroll_lock, false);
 	set_led(led::num_lock, false);
@@ -234,11 +247,10 @@ Keyboard_Controller::Keyboard_Controller() : ctrl_port(0x64), data_port(0x60)
 Key Keyboard_Controller::key_hit()
 {
 	Key invalid; // not explicitly initialized Key objects are invalid
-/* Add your code here */ 
-/* Add your code here */ 
- 
-/* Add your code here */ 
-	return invalid;
+  while ((ctrl_port.inb() & outb) == 0) {}
+  code = data_port.inb();
+  if (!key_decoded()) return invalid;
+  return gather;
 }
 
 // REBOOT: Reboots the PC. Yes, in a PC the keyboard controller is
@@ -269,21 +281,25 @@ void Keyboard_Controller::reboot()
 //                  key codes should come in during the repetition phase.
 //                  Allowed values are between 0 (very fast) and 31 (very
 //                  slow).
-
 void Keyboard_Controller::set_repeat_rate(int speed, int delay)
 {
-/* Add your code here */ 
- 
-/* Add your code here */ 
- 
+  unsigned char val = ((delay & 0b11) << 5) | (speed & 0b11111);
+
+  int speedPerc = (int)(100.0 - speed / 31.0 * 100.0);
+  int delayPerc = (int)(delay / 3.0 * 100.0);
+  kout << "Speed: " << dec << speedPerc << "% Delay: " << delayPerc << "% (";
+  kout << bin << (int)val << ")" << endl;
+
+  sendByte(kbd_cmd::set_speed);
+  sendByte(val); // set all on
 }
 
 // SET_LED: sets or clears the specified LED
-
 void Keyboard_Controller::set_led(char led, bool on)
 {
-/* Add your code here */ 
- 
-/* Add your code here */ 
- 
+  leds &= ~led;
+  leds |= led * on;
+
+  sendByte(kbd_cmd::set_led);
+  sendByte((unsigned char)leds);
 }
