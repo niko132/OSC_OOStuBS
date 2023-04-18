@@ -15,4 +15,14 @@
 
 #include "object/strbuf.h"
 
-/* Add your code here */ 
+Stringbuffer::Stringbuffer() {
+  pos = 0;
+  for (int i = 0; i < 80; i++) {
+    str[i] = 0;
+  }
+}
+
+void Stringbuffer::put(char c) {
+  str[pos++] = c;
+  if (pos >= 80 || c == '\n') flush();
+}

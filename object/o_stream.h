@@ -22,11 +22,35 @@
 #include "object/strbuf.h"
 
 class O_Stream
-/* Add your code here */ 
+: public Stringbuffer
 {
+private:
+ 	unsigned long numberBase;
+
+	char toPrintableDigit(unsigned long digit);
+
 public:
 	O_Stream(const O_Stream &copy) = delete; // prevent copying
-/* Add your code here */ 
+	O_Stream();
+
+	void setNumberBase(unsigned long base);
+
+	O_Stream& operator<< (unsigned char c);
+	O_Stream& operator<< (char c);
+
+	O_Stream& operator<< (unsigned long number);
+	O_Stream& operator<< (unsigned int number);
+	O_Stream& operator<< (unsigned short number);
+
+	O_Stream& operator<< (long number);
+	O_Stream& operator<< (int number);
+	O_Stream& operator<< (short number);
+
+	O_Stream& operator<< (char* text);
+
+	O_Stream& operator<< (void* pointer);
+
+	O_Stream& operator<< (O_Stream& (*fkt) (O_Stream&));
 };
 
 /*---------------------------------------------------------------------------*/
@@ -43,18 +67,18 @@ public:
 /*---------------------------------------------------------------------------*/
 
 // ENDL: inserts a newline in the output and flushes the buffer
-/* Add your code here */ 
+O_Stream& endl (O_Stream& os);
 
 // BIN: selects the binary number system
-/* Add your code here */ 
+O_Stream& bin (O_Stream& os);
 
 // OCT: selects the octal number system
-/* Add your code here */ 
+O_Stream& oct (O_Stream& os);
 
 // DEC: selects the decimal number system
-/* Add your code here */ 
+O_Stream& dec (O_Stream& os);
 
 // HEX: selects the hexadecimal number system
-/* Add your code here */ 
+O_Stream& hex (O_Stream& os);
 
 #endif

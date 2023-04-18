@@ -17,9 +17,16 @@
 #define __strbuf_include__
 
 class Stringbuffer {
+protected:
+	char str[80];
+	int pos;
+
 public:
 	Stringbuffer(const Stringbuffer &copy) = delete; // prevent copying
-/* Add your code here */ 
+	Stringbuffer();
+
+	void put(char c);
+	virtual void flush() = 0;
 };
 
 #endif
