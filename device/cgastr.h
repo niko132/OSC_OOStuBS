@@ -18,11 +18,15 @@
 #include "machine/cgascr.h"
 
 class CGA_Stream
-/* Add your code here */ 
+: public O_Stream, public CGA_Screen
 {
 public:
 	CGA_Stream(CGA_Stream &copy) = delete; // prevent copying
-/* Add your code here */ 
+	CGA_Stream();
+
+	void flush();
 };
+
+extern CGA_Stream kout;
 
 #endif

@@ -12,5 +12,15 @@
 /*****************************************************************************/
 
 #include "device/cgastr.h"
+#include "machine/cgascr.h"
 
-/* Add your code here */ 
+CGA_Stream::CGA_Stream() {
+
+}
+
+void CGA_Stream::flush() {
+  print(str, pos);
+  pos = 0;
+}
+
+CGA_Stream kout;
