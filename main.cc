@@ -69,6 +69,9 @@ int main()
       currentSpeed = speeds[currentSpeedIndex];
       kc.set_repeat_rate(currentSpeed, currentDelay);
       continue;
+    } else if (key.scancode() == 1) {
+      kc.reboot();
+      continue;
     }
 
     kout << key.ascii();
