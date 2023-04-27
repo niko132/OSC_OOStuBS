@@ -13,4 +13,46 @@
 /* be controlled by using class CPU.                                         */
 /*****************************************************************************/
 
-/* Add your code here */ 
+#include "machine/pic.h"
+
+PIC::PIC() : imr_1_port(0x21), imr_2_port(0xa1) {
+
+}
+
+void PIC::allow(int interrupt_device) {
+  unsigned char offset;
+  IO_Port port = cvt_device(interrupt_device, &offset);
+
+  unsigned short imr = port.inb();
+  imr = imr & ~(0x1 << offset);
+  port.outb(imr);
+}
+
+void PIC::forbid(int interrupt_device) {
+  unsigned char offset;
+  IO_Port port = cvt_device(interrupt_device, &offset);
+
+  unsigned char imr = port.inb();
+  imr = imr | (0x1 << offset);
+  port.outb(imr);
+}
+
+bool PIC::is_masked(int interrupt_device) {
+  unsigned char offset;
+  IO_Port port = cvt_device(interrupt_device, &offset);
+
+  unsigned char imr = port.inb();
+  return (imr >> offset) & 0x1;
+}
+
+const IO_Port& PIC::cvt_device(int interrupt_device, unsigned char* offset) {
+  if (interrupt_device < 8) {
+    *offset = interrupt_device;
+    return imr_1_port;
+  } else {
+    *offset = interrupt_device - 8;
+    return imr_2_port;
+  }
+}
+
+PIC pic;

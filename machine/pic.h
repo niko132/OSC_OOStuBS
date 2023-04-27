@@ -16,11 +16,28 @@
 #ifndef __pic_include__
 #define __pic_include__
 
+#include "machine/io_port.h"
+
 class PIC {
+private:
+		// the two used ports of the pic
+		const IO_Port imr_1_port; // interrupt mask register 1
+		const IO_Port imr_2_port; // interrupt mask register 2
+
+		const IO_Port& cvt_device(int interrupt_device, unsigned char* offset);
+
 public:
+	// status-register bits
+	enum { timer = 0x00, keyboard = 0x01 };
+
 	PIC(const PIC &copy) = delete; // prevent copying
-	PIC() {}
-/* Add your code here */ 
+	PIC();
+	
+	void allow(int interrupt_device);
+	void forbid(int interrupt_device);
+	bool is_masked(int interrupt_device);
 };
+
+extern PIC pic;
 
 #endif

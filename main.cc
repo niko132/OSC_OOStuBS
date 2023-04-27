@@ -1,6 +1,11 @@
 #include "device/cgastr.h"
 #include "machine/keyctrl.h"
 
+#include "machine/pic.h"
+#include "machine/cpu.h"
+
+CPU cpu;
+
 int main()
 {
   int speeds[] = {
@@ -42,6 +47,9 @@ int main()
 
   kout << endl << "Press any key..." << endl;
   kout << "Use the arrow keys to control repeat rate" << endl << endl;
+
+  cpu.enable_int();
+  pic.allow(PIC::keyboard);
 
   while (true) {
     Key key = kc.key_hit();
