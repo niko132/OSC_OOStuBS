@@ -70,9 +70,9 @@ bool Keyboard_Controller::key_decoded()
 		switch (code) {
 		case 42:
 		case 54:
-			gather
-			    .shift (false); break; case 56
-			    : if (prefix == prefix1) gather.alt_right(false);
+			gather.shift (false); break; 
+		case 56: 
+			if (prefix == prefix1) gather.alt_right(false);
 			else gather.alt_left(false);
 			break;
 		case 29:
@@ -101,9 +101,9 @@ bool Keyboard_Controller::key_decoded()
 	switch (code) {
 	case 42:
 	case 54:
-		gather
-		    .shift (true); break; case 56
-		    : if (prefix == prefix1) gather.alt_right(true);
+		gather.shift (true); break; 
+	case 56: 
+		if (prefix == prefix1) gather.alt_right(true);
 		else gather.alt_left(true);
 		break;
 	case 29:
@@ -249,7 +249,6 @@ Key Keyboard_Controller::key_hit()
 	Key invalid; // not explicitly initialized Key objects are invalid
   while ((ctrl_port.inb() & outb) == 0) {}
   code = data_port.inb();
-  if ((ctrl_port.inb() & auxb) != 0) return invalid; // input did not come from keyboard
   if (!key_decoded()) return invalid;
   return gather;
 }

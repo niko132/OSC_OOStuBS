@@ -14,11 +14,21 @@
 
 #include "guard/gate.h"
 
+#define NUM_GATES 64
+
 class Plugbox {
 public:
+	Plugbox(); 
 	Plugbox(const Plugbox &copy) = delete; // prevent copying
+
+	const unsigned short timer = 32; 
+	const unsigned short keyboard = 33; 
+
+	void assign (unsigned int slot, Gate& gate); 
+	Gate& report (unsigned int slot);
+
 private:
-/* Add your code here */ 
+	Gate * gates[NUM_GATES];
 };
 
 #endif

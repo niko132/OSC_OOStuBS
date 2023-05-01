@@ -4,7 +4,7 @@
 #include "machine/pic.h"
 #include "machine/cpu.h"
 
-CPU cpu;
+
 
 int main()
 {

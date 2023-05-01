@@ -35,4 +35,10 @@ public:
 	inline void halt() { cpu_halt(); }
 };
 
+inline CPU cpu; 
+
+//extern CPU cpu; 
+
+//CPU cpu; 
+
 #endif

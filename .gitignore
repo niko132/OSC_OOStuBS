@@ -1,0 +1,5 @@
+*.d
+*.o
+/build/system
+/isofiles/boot/system
+/build/bootdisk.iso

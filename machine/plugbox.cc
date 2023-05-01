@@ -9,4 +9,21 @@
 /* for every hardware and software interrupt and every CPU exception.        */
 /*****************************************************************************/
 
-/* Add your code here */ 
+#include "machine/plugbox.h"
+#include "device/panic.h"
+
+
+Plugbox::Plugbox(){
+    // init gates with panic for minimal interrupt handling
+    for(int i = 0; i < NUM_GATES; i++)
+        gates[i] = &panic; 
+}
+
+void Plugbox::assign(unsigned int slot, Gate& gate){
+    gates[slot] = &gate; 
+}
+
+Gate& Plugbox::report (unsigned int slot){
+    return *gates[slot]; 
+}
+
