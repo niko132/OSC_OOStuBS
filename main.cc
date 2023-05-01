@@ -1,6 +1,8 @@
 #include "device/cgastr.h"
 #include "machine/keyctrl.h"
 
+
+#include "device/keyboard.h"
 #include "machine/pic.h"
 #include "machine/cpu.h"
 
@@ -22,8 +24,8 @@ int main()
   int currentSpeedIndex = 0;
   int currentSpeed = speeds[currentSpeedIndex];
 
-  Keyboard_Controller kc;
-  kc.set_repeat_rate(currentSpeed, currentDelay); // set initial repeat rate
+  // Keyboard_Controller kc;
+  // kc.set_repeat_rate(currentSpeed, currentDelay); // set initial repeat rate
 
   kout.clear();
   kout.setPos(0, 0);
@@ -48,42 +50,44 @@ int main()
   kout << endl << "Press any key..." << endl;
   kout << "Use the arrow keys to control repeat rate" << endl << endl;
 
+
   cpu.enable_int();
+  keyboard.plugin();
   pic.allow(PIC::keyboard);
 
   while (true) {
-    Key key = kc.key_hit();
-    if (!key.valid()) continue;
+    // Key key = kc.key_hit();
+    // if (!key.valid()) continue;
 
-    if (key.scancode() == 75) {
-      currentDelay--;
-      if (currentDelay < 0) currentDelay = 0;
-      kc.set_repeat_rate(currentSpeed, currentDelay);
-      continue;
-    } else if (key.scancode() == 77) {
-      currentDelay++;
-      if (currentDelay > 3) currentDelay = 3;
-      kc.set_repeat_rate(currentSpeed, currentDelay);
-      continue;
-    } else if (key.scancode() == 80) {
-      currentSpeedIndex--;
-      if (currentSpeedIndex < 0) currentSpeedIndex = 0;
-      currentSpeed = speeds[currentSpeedIndex];
-      kc.set_repeat_rate(currentSpeed, currentDelay);
-      continue;
-    } else if (key.scancode() == 72) {
-      currentSpeedIndex++;
-      if (currentSpeedIndex > 6) currentSpeedIndex = 6;
-      currentSpeed = speeds[currentSpeedIndex];
-      kc.set_repeat_rate(currentSpeed, currentDelay);
-      continue;
-    } else if (key.scancode() == 1) {
-      kc.reboot();
-      continue;
-    }
+    // if (key.scancode() == 75) {
+    //   currentDelay--;
+    //   if (currentDelay < 0) currentDelay = 0;
+    //   kc.set_repeat_rate(currentSpeed, currentDelay);
+    //   continue;
+    // } else if (key.scancode() == 77) {
+    //   currentDelay++;
+    //   if (currentDelay > 3) currentDelay = 3;
+    //   kc.set_repeat_rate(currentSpeed, currentDelay);
+    //   continue;
+    // } else if (key.scancode() == 80) {
+    //   currentSpeedIndex--;
+    //   if (currentSpeedIndex < 0) currentSpeedIndex = 0;
+    //   currentSpeed = speeds[currentSpeedIndex];
+    //   kc.set_repeat_rate(currentSpeed, currentDelay);
+    //   continue;
+    // } else if (key.scancode() == 72) {
+    //   currentSpeedIndex++;
+    //   if (currentSpeedIndex > 6) currentSpeedIndex = 6;
+    //   currentSpeed = speeds[currentSpeedIndex];
+    //   kc.set_repeat_rate(currentSpeed, currentDelay);
+    //   continue;
+    // } else if (key.scancode() == 1) {
+    //   kc.reboot();
+    //   continue;
+    // }
 
-    kout << key.ascii();
-    kout.flush();
+    // kout << key.ascii();
+    // kout.flush();
   }
 
 	return 0;

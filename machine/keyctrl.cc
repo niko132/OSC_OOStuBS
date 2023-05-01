@@ -247,7 +247,7 @@ Keyboard_Controller::Keyboard_Controller() : ctrl_port(0x64), data_port(0x60)
 Key Keyboard_Controller::key_hit()
 {
 	Key invalid; // not explicitly initialized Key objects are invalid
-  while ((ctrl_port.inb() & outb) == 0) {}
+  //while ((ctrl_port.inb() & outb) == 0) {}
   code = data_port.inb();
   if (!key_decoded()) return invalid;
   return gather;

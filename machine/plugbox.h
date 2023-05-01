@@ -31,4 +31,6 @@ private:
 	Gate * gates[NUM_GATES];
 };
 
+extern Plugbox plugbox; 
+
 #endif

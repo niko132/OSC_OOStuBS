@@ -12,7 +12,7 @@
 #include "device/cgastr.h"
 
 void Panic::trigger() {
-    kout << "Stopping CPU!"; 
+    kout << "Stopping CPU!" << endl; 
     cpu.halt(); 
 }
 

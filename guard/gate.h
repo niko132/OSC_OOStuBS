@@ -12,7 +12,7 @@
 #define __Gate_include__
 
 class Gate {
-
+public: 
     virtual void trigger () = 0; 
 };
 
