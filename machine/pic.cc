@@ -45,6 +45,19 @@ bool PIC::is_masked(int interrupt_device) {
   return (imr >> offset) & 0x1;
 }
 
+bool PIC::get_and_forbid(int interrupt_device) {
+  bool forbidden = is_masked(interrupt_device);
+  forbid(interrupt_device);
+  return forbidden;
+}
+
+void PIC::set_forbidden(int interrupt_device, bool forbidden) {
+  if (forbidden)
+    forbid(interrupt_device);
+  else
+    allow(interrupt_device);
+}
+
 const IO_Port& PIC::cvt_device(int interrupt_device, unsigned char* offset) {
   if (interrupt_device < 8) {
     *offset = interrupt_device;

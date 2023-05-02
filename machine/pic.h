@@ -32,10 +32,13 @@ public:
 
 	PIC(const PIC &copy) = delete; // prevent copying
 	PIC();
-	
+
 	void allow(int interrupt_device);
 	void forbid(int interrupt_device);
 	bool is_masked(int interrupt_device);
+
+	bool get_and_forbid(int interrupt_device);
+	void set_forbidden(int interrupt_device, bool forbidden);
 };
 
 extern PIC pic;

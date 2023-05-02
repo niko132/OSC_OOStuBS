@@ -12,6 +12,7 @@
 
 #include "machine/keyctrl.h"
 #include "device/cgastr.h"
+#include "machine/pic.h"
 
 /* STATIC MEMBERS */
 
@@ -70,8 +71,8 @@ bool Keyboard_Controller::key_decoded()
 		switch (code) {
 		case 42:
 		case 54:
-			gather.shift (false); break; 
-		case 56: 
+			gather.shift (false); break;
+		case 56:
 			if (prefix == prefix1) gather.alt_right(false);
 			else gather.alt_left(false);
 			break;
@@ -101,8 +102,8 @@ bool Keyboard_Controller::key_decoded()
 	switch (code) {
 	case 42:
 	case 54:
-		gather.shift (true); break; 
-	case 56: 
+		gather.shift (true); break;
+	case 56:
 		if (prefix == prefix1) gather.alt_right(true);
 		else gather.alt_left(true);
 		break;
@@ -212,12 +213,16 @@ void Keyboard_Controller::get_ascii_code()
 void Keyboard_Controller::sendByte(unsigned char byte) {
   int answer;
   int retries = 500;
+
+  // disable interrupts as long as we communicate directly with the keyboard
+  bool forbidden = pic.get_and_forbid(PIC::keyboard);
   do {
     int writeRetries = 500;
     while ((ctrl_port.inb() & inpb) != 0 && --writeRetries >= 0) {}
     data_port.outb(byte);
     answer = data_port.inb();
   } while (answer != 0xFA && --retries >= 0);
+  pic.set_forbidden(PIC::keyboard, forbidden); // enable it again
 }
 
 /* PUBLIC METHODS */
@@ -247,7 +252,10 @@ Keyboard_Controller::Keyboard_Controller() : ctrl_port(0x64), data_port(0x60)
 Key Keyboard_Controller::key_hit()
 {
 	Key invalid; // not explicitly initialized Key objects are invalid
-  //while ((ctrl_port.inb() & outb) == 0) {}
+
+  // check if there is data in the keyboard buffer
+  if ((ctrl_port.inb() & outb) == 0) return invalid;
+
   code = data_port.inb();
   if (!key_decoded()) return invalid;
   return gather;

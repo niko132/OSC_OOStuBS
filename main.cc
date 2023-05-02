@@ -10,23 +10,6 @@
 
 int main()
 {
-  int speeds[] = {
-    0x14,
-    0x10,
-    0x0c,
-    0x08,
-    0x04,
-    0x02,
-    0x00
-  };
-
-  int currentDelay = 0;
-  int currentSpeedIndex = 0;
-  int currentSpeed = speeds[currentSpeedIndex];
-
-  // Keyboard_Controller kc;
-  // kc.set_repeat_rate(currentSpeed, currentDelay); // set initial repeat rate
-
   kout.clear();
   kout.setPos(0, 0);
   kout << "Booted - running tests:" << endl << endl;
@@ -56,38 +39,7 @@ int main()
   pic.allow(PIC::keyboard);
 
   while (true) {
-    // Key key = kc.key_hit();
-    // if (!key.valid()) continue;
 
-    // if (key.scancode() == 75) {
-    //   currentDelay--;
-    //   if (currentDelay < 0) currentDelay = 0;
-    //   kc.set_repeat_rate(currentSpeed, currentDelay);
-    //   continue;
-    // } else if (key.scancode() == 77) {
-    //   currentDelay++;
-    //   if (currentDelay > 3) currentDelay = 3;
-    //   kc.set_repeat_rate(currentSpeed, currentDelay);
-    //   continue;
-    // } else if (key.scancode() == 80) {
-    //   currentSpeedIndex--;
-    //   if (currentSpeedIndex < 0) currentSpeedIndex = 0;
-    //   currentSpeed = speeds[currentSpeedIndex];
-    //   kc.set_repeat_rate(currentSpeed, currentDelay);
-    //   continue;
-    // } else if (key.scancode() == 72) {
-    //   currentSpeedIndex++;
-    //   if (currentSpeedIndex > 6) currentSpeedIndex = 6;
-    //   currentSpeed = speeds[currentSpeedIndex];
-    //   kc.set_repeat_rate(currentSpeed, currentDelay);
-    //   continue;
-    // } else if (key.scancode() == 1) {
-    //   kc.reboot();
-    //   continue;
-    // }
-
-    // kout << key.ascii();
-    // kout.flush();
   }
 
 	return 0;
