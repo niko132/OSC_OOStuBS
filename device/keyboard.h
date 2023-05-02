@@ -19,8 +19,6 @@
 class Keyboard : public Gate, public Keyboard_Controller
 {
 private:
-  Keyboard_Controller kc;
-
   // the following vars are for repeat rate config
   const int speeds[7] = {
     0x14,
@@ -31,7 +29,7 @@ private:
     0x02,
     0x00
   };
-  
+
   int currentDelay = 0;
   int currentSpeedIndex = 0;
   int currentSpeed = speeds[currentSpeedIndex];
@@ -39,13 +37,9 @@ private:
 public:
 	Keyboard();
 	Keyboard(const Keyboard &copy) = delete; // prevent copying
-/* Add your code here */
-
-/* Add your code here */
 
 	// PLUGIN: "Plugs in" the keyboard (driver). From now on, keypresses are handled.
 	void plugin();
-
 	void trigger () override;
 
 };

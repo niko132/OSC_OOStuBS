@@ -12,15 +12,30 @@
 
 #include "user/appl.h"
 #include "device/cgastr.h"
-/* Add your code here */ 
- 
+
+#include "machine/cpu.h"
+/* Add your code here */
+
 /* GLOBAL VARIABLES */
 
 extern CGA_Stream kout;
-/* Add your code here */ 
- 
+
+Application::Application() {
+
+}
+
 void Application::action()
 {
-/* Add your code here */ 
- 
+  kout.clear();
+
+  unsigned long cnt = 0;
+  while (true) {
+    cpu.disable_int();
+    kout.setPos(0, 3);
+    // cpu.disable_int(); TODO: before or after setPos() needs to be discussed
+    kout << "Test: " << dec << cnt;
+    kout.flush();
+    cpu.enable_int();
+    cnt++;
+  }
 }

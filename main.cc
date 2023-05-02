@@ -6,6 +6,7 @@
 #include "machine/pic.h"
 #include "machine/cpu.h"
 
+#include "user/appl.h"
 
 
 int main()
@@ -38,9 +39,8 @@ int main()
   keyboard.plugin();
   pic.allow(PIC::keyboard);
 
-  while (true) {
-
-  }
+  Application application;
+  application.action();
 
 	return 0;
 }

@@ -16,7 +16,7 @@
 
 CGA_Screen::CGA_Screen() : indexPort(0x3d4), dataPort(0x3d5)
 {
-
+  setPos(0, 0); // maybe fixes the reboot problem
 }
 
 void CGA_Screen::show(int x, int y, char c, unsigned char attrib) {
