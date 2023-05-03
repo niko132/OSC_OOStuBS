@@ -296,7 +296,8 @@ void Keyboard_Controller::set_repeat_rate(int speed, int delay)
   int speedPerc = (int)(100.0 - speed / 31.0 * 100.0);
   int delayPerc = (int)(delay / 3.0 * 100.0);
   kout << "Speed: " << dec << speedPerc << "% Delay: " << delayPerc << "% (";
-  kout << bin << (int)val << ")" << endl;
+  kout << bin << (int)val << ")";
+  kout.flush();
 
   sendByte(kbd_cmd::set_speed);
   sendByte(val); // set all on
