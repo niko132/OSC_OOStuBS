@@ -16,16 +16,19 @@
 Plugbox::Plugbox(){
     // init gates with panic for minimal interrupt handling
     for(int i = 0; i < NUM_GATES; i++)
-        gates[i] = &panic; 
+        gates[i] = &panic;
 }
 
 void Plugbox::assign(unsigned int slot, Gate& gate){
-    gates[slot] = &gate; 
+  if (slot >= NUM_GATES) panic.trigger();
+
+  gates[slot] = &gate;
 }
 
 Gate& Plugbox::report (unsigned int slot){
-    return *gates[slot]; 
+  if (slot >= NUM_GATES) panic.trigger();
+
+  return *gates[slot];
 }
 
-Plugbox plugbox; 
-
+Plugbox plugbox;

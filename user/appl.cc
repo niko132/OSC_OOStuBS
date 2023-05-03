@@ -32,7 +32,6 @@ void Application::action()
   while (true) {
     cpu.disable_int();
     kout.setPos(0, 3);
-    // cpu.disable_int(); TODO: before or after setPos() needs to be discussed
     kout << "Test: " << dec << cnt;
     kout.flush();
     cpu.enable_int();
