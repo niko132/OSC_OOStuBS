@@ -145,6 +145,7 @@ init_longmode:
 	; jump to 64-bit code segment -> full activation of Long Mode
 	jmp    2 * 0x8 : longmode_start
 
+
 ;
 ;   Generation of a (provisional) page table with a page size of 2 MB, which
 ;   maps the first MAX_MEM GB directly to physical memory. Currently, the
@@ -232,6 +233,7 @@ clear_bss:
 	cli            ; Usually we should not get here.
 	hlt
 
+
 ;
 ;   Interrupt handling
 ;
@@ -291,6 +293,7 @@ wrapper_body:
 	; done
 	iretq
 
+
 ;
 ; Relocating of IDT entries and setting IDTR
 ;
@@ -298,7 +301,7 @@ wrapper_body:
 setup_idt:
 	mov    rax, wrapper_0
 
-	; bits 0..15 -> ax, 16..31 -> bx, 32..64 -> edx
+	; bits 0..15 -> ax, 16..31 -> bx, 32..63 -> edx
 	mov    rbx, rax
 	mov    rdx, rax
 	shr    rdx, 32
@@ -382,6 +385,7 @@ reprogram_pics:
 
 	ret
 
+
 ;
 ; Run constructors of global objects
 ;
@@ -397,6 +401,7 @@ _init_loop:
 	ja     _init_loop
 _init_done:
 	ret
+
 
 ;
 ; Run destructors of global objects
@@ -414,6 +419,7 @@ _fini_loop:
 _fini_done:
 	ret
 
+
 ;
 ; Short delay for in/out instructions
 ;
@@ -422,6 +428,7 @@ delay:
 	jmp    .L2
 .L2:
 	ret
+
 
 ;
 ; Functions for the C++ compiler. These labels must be defined for the linker;
@@ -433,6 +440,7 @@ _ZdlPv:             ; void operator delete(void*)
 _ZdlPvj:            ; void operator delete(void*, unsigned int) for g++ 6.x
 _ZdlPvm:            ; void operator delete(void*, unsigned long) for g++ 6.x
 	ret
+
 
 [SECTION .data]
 
@@ -465,6 +473,7 @@ gdt_80:
 	dw  4*8 - 1   ; GDT limit=24, 4 GDT entries - 1
 	dq  gdt       ; GDT address
 
+
 ;
 ; Interrupt descriptor table with 256 entries
 ;
@@ -473,7 +482,7 @@ idt:
 %macro idt_entry 1
 	dw  (wrapper_%1 - wrapper_0) & 0xffff ; offset 0 .. 15
 	dw  0x0000 | 0x8 * 2 ; selector points to 64-bit code segment selector (GDT)
-	dw  0x8e00 ; 8 -> interrupt is present, e -> 80386 32-bit interrupt gate
+	dw  0x8e00 ; 8 -> interrupt is present, e -> 64-bit interrupt gate
 	dw  ((wrapper_%1 - wrapper_0) & 0xffff0000) >> 16 ; offset 16 .. 31
 	dd  ((wrapper_%1 - wrapper_0) & 0xffffffff00000000) >> 32 ; offset 32..63
 	dd  0x00000000 ; reserved
@@ -488,6 +497,7 @@ idt_entry i
 idt_descr:
 	dw  256*8 - 1    ; 256 entries
 	dq idt
+
 
 [SECTION .bss]
 
