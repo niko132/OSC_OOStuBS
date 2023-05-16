@@ -13,6 +13,9 @@
 #include "device/cgastr.h"
 #include "machine/plugbox.h"
 #include "guard/gate.h"
+#include "guard/guard.h"
+
+#include "machine/cpu.h"
 
 
 /* FUNCTIONS */
@@ -27,6 +30,6 @@ void guardian (unsigned int slot)
   //kout << "GUARDIAN: " << dec << slot << endl; // debug output
 
   // call the routine for the specific interrupt
-  plugbox.report(slot).trigger(); 
-
+  Gate& gate = plugbox.report(slot);
+  if (gate.prologue()) guard.relay(&gate);
 }

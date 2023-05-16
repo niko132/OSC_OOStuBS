@@ -14,10 +14,28 @@
 #ifndef __Locker_include__
 #define __Locker_include__
 
+#include "device/panic.h"
+
 class Locker {
+private:
+	bool is_free;
 public:
 	Locker(const Locker &copy) = delete; // prevent copying
-/* Add your code here */ 
+	Locker() : is_free(true) { };
+
+	void enter() {
+		if (!is_free) panic.prologue();
+		is_free = false;
+	};
+
+	void retne() {
+		if (is_free) panic.prologue();
+		is_free = true;
+	};
+
+	bool avail() {
+		return is_free;
+	};
 };
 
 #endif

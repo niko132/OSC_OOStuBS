@@ -11,9 +11,10 @@
 #include "machine/cpu.h"
 #include "device/cgastr.h"
 
-void Panic::trigger() {
+bool Panic::prologue() {
     kout << "Stopping CPU!" << endl; 
-    cpu.halt(); 
+    cpu.halt();
+    return false; // not executed but still needed
 }
 
 Panic panic; 

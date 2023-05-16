@@ -20,13 +20,13 @@ Plugbox::Plugbox(){
 }
 
 void Plugbox::assign(unsigned int slot, Gate& gate){
-  if (slot >= NUM_GATES) panic.trigger();
+  if (slot >= NUM_GATES) panic.prologue();
 
   gates[slot] = &gate;
 }
 
 Gate& Plugbox::report (unsigned int slot){
-  if (slot >= NUM_GATES) panic.trigger();
+  if (slot >= NUM_GATES) panic.prologue();
 
   return *gates[slot];
 }

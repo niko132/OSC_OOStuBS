@@ -14,6 +14,7 @@
 #include "device/cgastr.h"
 
 #include "machine/cpu.h"
+#include "guard/guard.h"
 /* Add your code here */
 
 /* GLOBAL VARIABLES */
@@ -30,11 +31,11 @@ void Application::action()
 
   unsigned long cnt = 0;
   while (true) {
-    cpu.disable_int();
+    guard.enter();
     kout.setPos(0, 3);
     kout << "Test: " << dec << cnt;
     kout.flush();
-    cpu.enable_int();
+    guard.leave();
     cnt++;
   }
 }

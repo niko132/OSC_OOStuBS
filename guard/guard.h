@@ -13,13 +13,21 @@
 #ifndef __Guard_include__
 #define __Guard_include__
 
-/* Add your code here */ 
+#include "guard/locker.h"
+#include "guard/gate.h"
+#include "object/queue.h"
 
 class Guard : public Locker {
+private:
+	Queue queue;
 public:
 	Guard (const Guard &copy) = delete; // prevent copying
 	Guard () {}
-/* Add your code here */ 
+
+	void leave();
+	void relay(Gate* item);
 };
+
+extern Guard guard;
 
 #endif

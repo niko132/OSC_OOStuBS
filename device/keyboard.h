@@ -16,6 +16,31 @@
 #include "machine/key.h"
 #include "machine/keyctrl.h"
 
+// a lock free ring buffer implementation to store keys
+class BoundedKeyBuffer {
+private:
+  static const int SIZE = 10;
+  Key buf[SIZE];
+  int nextIn, nextOut;
+
+public:
+  BoundedKeyBuffer() : nextIn(0), nextOut(0) { };
+
+  bool produce(Key key) {
+    if ((nextIn + 1) % SIZE == nextOut) return false;
+    buf[nextIn] = key;
+    nextIn = (nextIn + 1) % SIZE;
+    return true;
+  };
+
+  Key consume() {
+    if (nextOut == nextIn) return Key();
+    Key result = buf[nextOut];
+    nextOut = (nextOut + 1) % SIZE;
+    return result;
+  };
+};
+
 class Keyboard : public Gate, public Keyboard_Controller
 {
 private:
@@ -34,13 +59,16 @@ private:
   int currentSpeedIndex = 0;
   int currentSpeed = speeds[currentSpeedIndex];
 
+  BoundedKeyBuffer pressed_keys;
+
 public:
 	Keyboard();
 	Keyboard(const Keyboard &copy) = delete; // prevent copying
 
 	// PLUGIN: "Plugs in" the keyboard (driver). From now on, keypresses are handled.
 	void plugin();
-	void trigger () override;
+	bool prologue() override;
+  void epilogue() override;
 
 };
 
