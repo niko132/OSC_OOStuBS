@@ -15,6 +15,18 @@
 #ifndef __Secure_include__
 #define __Secure_include__
 
-/* Add your code here */ 
+#include "guard/guard.h"
+
+class Secure {
+public: 
+    Secure (){
+        guard.enter(); 
+    }
+
+    ~Secure(){
+        guard.leave(); 
+    }
+ 
+};
 
 #endif

@@ -15,6 +15,7 @@
 
 #include "machine/cpu.h"
 #include "guard/guard.h"
+#include "guard/secure.h"
 /* Add your code here */
 
 /* GLOBAL VARIABLES */
@@ -31,11 +32,13 @@ void Application::action()
 
   unsigned long cnt = 0;
   while (true) {
-    guard.enter();
-    kout.setPos(0, 3);
-    kout << "Test: " << dec << cnt;
-    kout.flush();
-    guard.leave();
+    {
+      Secure secure;
+
+      kout.setPos(0, 3);
+      kout << "Test: " << dec << cnt;
+      kout.flush();
+    }
     cnt++;
   }
 }
