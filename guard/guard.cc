@@ -14,20 +14,6 @@
 #include "machine/cpu.h"
 
 void Guard::leave() {
-    /*
-    cpu.enable_int(); // TODO: find best spot to enable interrupts
-
-    Chain* elem = nullptr;
-    while ((elem = queue.dequeue()) != nullptr) {
-        Gate* gate = (Gate*) elem;
-        gate->epilogue();
-        gate->queued(false); // TODO: check ordering
-    }
-
-    retne();
-    */
-
-
     Gate* g;
     while (true) {
         cpu.disable_int();
@@ -45,23 +31,21 @@ void Guard::leave() {
 }
 
 void Guard::relay(Gate* item) {
-    // TODO: discuss and choose better solution
-    /*
+    // at this point we assume that interrupts got disabled by the interrupt handler (assembler)
+    // therefore we can guarantee synchronized access to the queue
     if (!item->queued())
         queue.enqueue(item);
 
     if (avail()) {
-        enter(); // enter critical section
-        leave(); // just to run every queued epilogue
+        enter(); // enter the critical section so that other interrupts don't call their epilogues
+        cpu.enable_int(); // not really needed because leave() handles interrupt enable/disable but maybe good for realtime optimizations
+        // interrupts can trigger here and enqueue their epilogues so that they are handled faster
+        leave();
     }
-    */
 
-    if (avail()) {
-        item->epilogue();
-    } else if (!item->queued()) {
-        queue.enqueue(item);
-        item->queued(true);
-    }
+    // we queued our epilogue
+    // now either   1. the CS was available and the epilogues got called already
+    // or           2. the system will call leave() soon and handle all queued epilogues
 }
 
 Guard guard;
