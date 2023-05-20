@@ -12,7 +12,7 @@
 #include "machine/plugbox.h"
 #include "device/cgastr.h"
 
-Keyboard::Keyboard(){
+Keyboard::Keyboard() : currentXPos(7), currentYPos(7) {
 
 }
 
@@ -39,7 +39,7 @@ void Keyboard::epilogue() {
 
         int x, y;
         kout.getPos(x, y);
-        kout.setPos(7, 7);
+        kout.setPos(currentXPos, currentYPos);
 
         if (key.scancode() == 83) {
             if (key.ctrl_left() && key.alt_left()) // CTRL + ALT + DEL
@@ -63,10 +63,11 @@ void Keyboard::epilogue() {
             currentSpeed = speeds[currentSpeedIndex];
             set_repeat_rate(currentSpeed, currentDelay);
         } else {
-            kout << "Valid key: " << key.ascii();
+            kout << key.ascii();
             kout.flush();
         }
 
+        kout.getPos(currentXPos, currentYPos);
         kout.setPos(x, y);
     }
 }

@@ -60,6 +60,7 @@ private:
   int currentSpeed = speeds[currentSpeedIndex];
 
   BoundedKeyBuffer pressed_keys;
+  int currentXPos, currentYPos;
 
 public:
 	Keyboard();
