@@ -11,15 +11,28 @@
 #ifndef __application_include__
 #define __application_include__
 
-class Application
+#include "thread/coroutine.h"
+
+class Application : public Coroutine
 
 {
 
 public:
 	Application (const Application &copy) = delete; // prevent copying
-  Application();
+  	Application();
 
 	void action ();
+};
+
+class TestCoroutine : public Coroutine
+{
+public:
+	int val;
+	Coroutine& next;
+
+	TestCoroutine(int startVal, void* tos, Coroutine& next);
+
+	void action();
 };
 
 #endif
