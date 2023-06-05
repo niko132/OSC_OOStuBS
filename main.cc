@@ -5,7 +5,7 @@
 #include "device/keyboard.h"
 #include "machine/pic.h"
 #include "machine/cpu.h"
-
+#include "thread/dispatch.h"
 #include "user/appl.h"
 
 
@@ -40,7 +40,7 @@ int main()
   pic.allow(PIC::keyboard);
 
   Application application;
-  application.go();
+  dispatcher.dispatch(application); 
 
 	return 0;
 }
