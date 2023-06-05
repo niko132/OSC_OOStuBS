@@ -24,8 +24,9 @@ Coroutine* Dispatcher::active (){
 }
 
 void Dispatcher::dispatch (Coroutine& next){
-    lifePointer->resume(next); 
-    lifePointer = &next; 
+    Coroutine* oldLife = lifePointer;
+    lifePointer = &next;
+    oldLife->resume(next);
 }
 
 void Dispatcher::go (Coroutine& first){

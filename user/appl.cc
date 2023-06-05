@@ -40,8 +40,7 @@ void Application::action()
   TestCoroutine cor2(4, &stacks[2][STACK_SIZE], cor3);
   TestCoroutine cor1(3, &stacks[1][STACK_SIZE], cor2);
 
-  dispatcher.dispatch(cor1); 
-  //resume(cor1); 
+  dispatcher.dispatch(cor1);
 
   
   unsigned long cnt = 0;

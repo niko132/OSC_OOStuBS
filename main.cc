@@ -40,7 +40,7 @@ int main()
   pic.allow(PIC::keyboard);
 
   Application application;
-  dispatcher.dispatch(application); 
+  dispatcher.go(application); 
 
 	return 0;
 }
