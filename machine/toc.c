@@ -18,34 +18,36 @@ void toc_settle(struct toc *regs, void *tos,
 				void *),
 		void *object)
 {
-	// 1. Step:
-	// zero registers (toc)
+	// STACK LAYOUT
+	//
+	// LA	[					]
+	// 		...
+	// ^	[					]
+	// |	[&kickoff			] <- rsp
+	// |	[0					] <- bsp
+	//		[object (1st arg)	] <- argp
+	// HA	[					] <- tos
+
+	// 1st: prepare all pointers
+	void** p = (void**)tos;
+	void** argp = --p;
+	void** bp = --p;
+	void** sp = --p;
+
+	// 2nd: assign values to the pointers
+	*argp = object;
+	*bp = 0;
+	*sp = (void*)kickoff;
+
+	// 3rd: zero the registers and assign the corrent bp & sp
 	regs->rbx = 0;
 	regs->r12 = 0;
 	regs->r13 = 0;
 	regs->r14 = 0;
 	regs->r15 = 0;
-	regs->rbp = tos - 2 * sizeof(void*); // TODO: find out why exactly
-	// it's not important which value is assigned to the base pointer
-	// even though the position of the params should be determined by it
-
-	// also our stack layout is slightly different than the ones online
-	// online is one more entry for the prev base address
-	// this should theoretically also mess up the programm
-
-	// but idk - it works
-	regs->rsp = tos - 3 * sizeof(void*);
+	regs->rbp = bp;
+	regs->rsp = sp;
 	for (int i = 0; i < 108; i++) {
 		regs->fpu[i] = 0;
 	}
-
-	// 2. Step:
-	// prepare the stack
-	void** p = (void**) tos;
-	p--;
-	*p = object;
-	p--;
-	*p = 0;
-	p--;
-	*p = (void*)kickoff;
 }
