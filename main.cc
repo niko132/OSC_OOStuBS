@@ -5,7 +5,7 @@
 #include "device/keyboard.h"
 #include "machine/pic.h"
 #include "machine/cpu.h"
-#include "thread/dispatch.h"
+#include "thread/scheduler.h"
 #include "user/appl.h"
 
 
@@ -40,7 +40,8 @@ int main()
   pic.allow(PIC::keyboard);
 
   Application application;
-  dispatcher.go(application); 
+  scheduler.ready(application);
+  scheduler.schedule();
 
 	return 0;
 }

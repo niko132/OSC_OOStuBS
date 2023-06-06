@@ -33,6 +33,4 @@ private:
 
 };
 
-extern Dispatcher dispatcher; 
-
 #endif

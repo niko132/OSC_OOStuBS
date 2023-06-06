@@ -33,7 +33,3 @@ void Dispatcher::go (Coroutine& first){
     lifePointer = &first; 
     first.go(); 
 }
-
-Dispatcher dispatcher; 
-
-

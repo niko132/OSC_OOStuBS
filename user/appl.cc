@@ -16,7 +16,8 @@
 #include "machine/cpu.h"
 #include "guard/guard.h"
 #include "guard/secure.h"
-#include "thread/dispatch.h"
+#include "thread/scheduler.h"
+#include "thread/entrant.h"
 
 /* GLOBAL VARIABLES */
 
@@ -27,7 +28,7 @@ const int STACK_SIZE = 64 * 1024; // 64kB
 char stacks[5][STACK_SIZE];
 char* mainStack = stacks[0];
 
-Application::Application() : Coroutine(&mainStack[STACK_SIZE]) {
+Application::Application() : Entrant(&mainStack[STACK_SIZE]) {
 
 }
 
@@ -35,41 +36,33 @@ void Application::action()
 {
   kout.clear();
 
-  TestCoroutine cor4(6, &stacks[4][STACK_SIZE], *this);
-  TestCoroutine cor3(5, &stacks[3][STACK_SIZE], cor4);
-  TestCoroutine cor2(4, &stacks[2][STACK_SIZE], cor3);
-  TestCoroutine cor1(3, &stacks[1][STACK_SIZE], cor2);
+  // prepare some threads
+  TestCoroutine cor1(1, &stacks[1][STACK_SIZE]);
+  TestCoroutine cor2(2, &stacks[2][STACK_SIZE]);
+  TestCoroutine cor3(3, &stacks[3][STACK_SIZE]);
+  TestCoroutine cor4(4, &stacks[4][STACK_SIZE]);
 
-  dispatcher.dispatch(cor1);
+  // exit the current execution and start the threads
+  scheduler.exit();
+}
 
-  
+TestCoroutine::TestCoroutine(int threadId, void* tos) : Entrant(tos), id(threadId)
+{
+  scheduler.ready(*this);
+}
+
+void TestCoroutine::action() {
   unsigned long cnt = 0;
   while (true) {
     {
       Secure secure;
 
-      kout.setPos(0, 2);
-      kout << "Test: " << dec << cnt;
+      kout.setPos(1, id);
+      kout << "Thread #" << dec << id << ": " << dec << cnt;
       kout.flush();
     }
     cnt++;
+
+    scheduler.resume();
   }
-}
-
-TestCoroutine::TestCoroutine(int startVal, void* tos, Coroutine& next) : Coroutine(tos), val(startVal), next(next)
-{
-
-}
-
-void TestCoroutine::action() {
-  {
-    Secure secure;
-
-    kout.setPos(1, val);
-    for (int i = 0; i < 10; i++) {
-      kout << " " << dec << (val + i);
-    }
-    kout.flush();
-  }
-  dispatcher.dispatch(next);
 }

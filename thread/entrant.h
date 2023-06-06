@@ -11,15 +11,18 @@
 #ifndef __entrant_include__
 #define __entrant_include__
 
-/* Add your code here */ 
+#include "object/chain.h"
+#include "thread/coroutine.h"
 
-class Entrant
-/* Add your code here */ 
+class Entrant :
+public Chain, public Coroutine
 {
 public:
 	Entrant(const Entrant &copy) = delete; // prevent copying
+	Entrant(void* tos) : Chain(), Coroutine(tos)
+	{
 
-/* Add your code here */ 
+	}
 };
 
 #endif
