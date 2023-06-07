@@ -28,10 +28,12 @@ class TestCoroutine : public Entrant
 {
 public:
 	int id;
+	Entrant* killPtr = nullptr;
 
 	TestCoroutine(int threadId, void* tos);
 
 	void action();
+	void setKillPtr(Entrant* that);
 };
 
 #endif

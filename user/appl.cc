@@ -42,8 +42,20 @@ void Application::action()
   TestCoroutine cor3(3, &stacks[3][STACK_SIZE]);
   TestCoroutine cor4(4, &stacks[4][STACK_SIZE]);
 
+  cor1.setKillPtr(&cor1); // kill self
+  cor2.setKillPtr(&cor3); // kill other
+
   // exit the current execution and start the threads
   scheduler.exit();
+
+  // this code won't be executed - it's here to demonstrate that scheduler.exit() works
+  {
+    Secure secure;
+
+    kout.setPos(1, 5);
+    kout << "This should not be displayed";
+    kout.flush();
+  }
 }
 
 TestCoroutine::TestCoroutine(int threadId, void* tos) : Entrant(tos), id(threadId)
@@ -54,6 +66,10 @@ TestCoroutine::TestCoroutine(int threadId, void* tos) : Entrant(tos), id(threadI
 void TestCoroutine::action() {
   unsigned long cnt = 0;
   while (true) {
+    if (this->killPtr && cnt >= 1000) {
+      scheduler.kill(*killPtr);
+    }
+
     {
       Secure secure;
 
@@ -65,4 +81,8 @@ void TestCoroutine::action() {
 
     scheduler.resume();
   }
+}
+
+void TestCoroutine::setKillPtr(Entrant* that) {
+  this->killPtr = that;
 }
