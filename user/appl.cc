@@ -18,8 +18,10 @@
 #include "machine/cpu.h"
 #include "guard/guard.h"
 #include "guard/secure.h"
-#include "thread/scheduler.h"
+#include "syscall/guarded_scheduler.h"
 #include "thread/entrant.h"
+
+#include "device/watch.h"
 
 /* GLOBAL VARIABLES */
 
@@ -30,12 +32,15 @@ const int STACK_SIZE = 64 * 1024; // 64kB
 char stacks[5][STACK_SIZE];
 char* mainStack = stacks[0];
 
-Application::Application() : Entrant(&mainStack[STACK_SIZE]) {
+Application::Application() : Thread(&mainStack[STACK_SIZE]) {
 
 }
 
 void Application::action()
 {
+  Watch watch(20); // 20us timer
+  watch.windup();
+
   kout.clear();
 
   // prepare some threads
@@ -60,7 +65,7 @@ void Application::action()
   }
 }
 
-TestCoroutine::TestCoroutine(int threadId, void* tos) : Entrant(tos), id(threadId)
+TestCoroutine::TestCoroutine(int threadId, void* tos) : Thread(tos), id(threadId)
 {
   scheduler.ready(*this);
 }
@@ -80,11 +85,9 @@ void TestCoroutine::action() {
       kout.flush();
     }
     cnt++;
-
-    scheduler.resume();
   }
 }
 
-void TestCoroutine::setKillPtr(Entrant* that) {
+void TestCoroutine::setKillPtr(Thread* that) {
   this->killPtr = that;
 }

@@ -55,5 +55,3 @@ void Scheduler::nothingHandler() {
     kout << "Stopping the execution!" << endl;
     cpu.halt();
 }
-
-Scheduler scheduler;

@@ -10,6 +10,7 @@
 
 #include "device/keyboard.h"
 #include "machine/plugbox.h"
+#include "machine/pic.h"
 #include "device/cgastr.h"
 
 Keyboard::Keyboard() : currentXPos(7), currentYPos(7) {
@@ -18,6 +19,7 @@ Keyboard::Keyboard() : currentXPos(7), currentYPos(7) {
 
 void Keyboard::plugin(){
     plugbox.assign(plugbox.keyboard, *this);
+    pic.allow(PIC::keyboard);
 }
 
 bool Keyboard::prologue() {

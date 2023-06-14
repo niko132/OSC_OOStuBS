@@ -15,6 +15,7 @@
 #define __Locker_include__
 
 #include "device/panic.h"
+#include "device/cgastr.h"
 
 
 class Locker {
@@ -25,12 +26,18 @@ public:
 	Locker() : is_free(true) { };
 
 	void enter() {
-		if (!is_free) panic.prologue();
+		if (!is_free) {
+			kout << "Trying to enter a non free section" << endl;
+			panic.prologue();
+		}
 		is_free = false;
 	};
 
 	void retne() {
-		if (is_free) panic.prologue();
+		if (is_free) {
+			kout << "Trying to leave a free section" << endl;
+			panic.prologue();
+		}
 		is_free = true;
 	};
 

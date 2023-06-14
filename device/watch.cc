@@ -9,9 +9,21 @@
 /* process switch if necessary.                                              */
 /*****************************************************************************/
 
-/* Add your code here */ 
-/* Add your code here */ 
- 
-/* Add your code here */ 
-/* Add your code here */ 
+#include "device/watch.h"
+#include "machine/plugbox.h"
+#include "machine/pic.h"
+#include "syscall/guarded_scheduler.h"
+
+void Watch::windup() {
+    plugbox.assign(plugbox.timer, *this);
+    pic.allow(PIC::timer);
+}
+
+bool Watch::prologue() {
+    return true; // always run the epilogue when the timer fires an interrupt
+}
+
+void Watch::epilogue() {
+    scheduler.Scheduler::resume();
+}
 

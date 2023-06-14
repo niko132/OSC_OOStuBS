@@ -5,12 +5,17 @@
 #include "device/keyboard.h"
 #include "machine/pic.h"
 #include "machine/cpu.h"
-#include "thread/scheduler.h"
+#include "syscall/guarded_scheduler.h"
 #include "user/appl.h"
+
+#include "guard/secure.h"
 
 
 int main()
 {
+  // main() is a kernel level function so we run it on the epilogue level using a Secure object
+  Secure secure;
+
   kout.clear();
   kout.setPos(0, 0);
   kout << "Booted - running tests:" << endl << endl;
@@ -37,10 +42,11 @@ int main()
 
   cpu.enable_int();
   keyboard.plugin();
-  pic.allow(PIC::keyboard);
 
   Application application;
-  scheduler.ready(application);
+
+  // run the non guarded scheduler to not enter the critical section again
+  scheduler.Scheduler::ready(application);
   scheduler.schedule();
 
 	return 0;

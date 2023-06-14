@@ -11,10 +11,9 @@
 #ifndef __application_include__
 #define __application_include__
 
-#include "thread/entrant.h"
+#include "syscall/thread.h"
 
-class Application : public Entrant
-
+class Application : public Thread
 {
 
 public:
@@ -24,16 +23,16 @@ public:
 	void action ();
 };
 
-class TestCoroutine : public Entrant
+class TestCoroutine : public Thread
 {
 public:
 	int id;
-	Entrant* killPtr = nullptr;
+	Thread* killPtr = nullptr;
 
 	TestCoroutine(int threadId, void* tos);
 
 	void action();
-	void setKillPtr(Entrant* that);
+	void setKillPtr(Thread* that);
 };
 
 #endif

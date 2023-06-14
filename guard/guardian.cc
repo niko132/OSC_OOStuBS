@@ -10,7 +10,6 @@
 /*****************************************************************************/
 
 /* INCLUDES */
-#include "device/cgastr.h"
 #include "machine/plugbox.h"
 #include "guard/gate.h"
 #include "guard/guard.h"
@@ -27,8 +26,6 @@ extern "C" void guardian (unsigned int slot);
 
 void guardian (unsigned int slot)
 {
-  //kout << "GUARDIAN: " << dec << slot << endl; // debug output
-
   // call the routine for the specific interrupt
   Gate& gate = plugbox.report(slot);
   if (gate.prologue()) guard.relay(&gate);

@@ -13,11 +13,12 @@
 /*****************************************************************************/
 
 #include "thread/kickoff.h"
-/* Add your code here */ 
+#include "guard/guard.h"
  
 void kickoff(void* dummy1, void* dummy2, void* dummy3, void* dummy4,
     void* dummy5, void* dummy6, Coroutine* object)
 {
+    guard.leave();
     object->action();
 }
 
