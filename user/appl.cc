@@ -8,6 +8,8 @@
 /* The Application class defines the (only) application for OOStuBS.         */
 /*****************************************************************************/
 
+// GRUPPE 13!!!
+
 /* INCLUDES */
 
 #include "user/appl.h"
