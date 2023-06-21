@@ -21,8 +21,6 @@
 #include "syscall/guarded_scheduler.h"
 #include "thread/entrant.h"
 
-#include "device/watch.h"
-
 /* GLOBAL VARIABLES */
 
 extern CGA_Stream kout;
@@ -38,19 +36,16 @@ Application::Application() : Thread(&mainStack[STACK_SIZE]) {
 
 void Application::action()
 {
-  Watch watch(20); // 20us timer
-  watch.windup();
-
   kout.clear();
 
   // prepare some threads
-  TestCoroutine cor1(1, &stacks[1][STACK_SIZE]);
-  TestCoroutine cor2(2, &stacks[2][STACK_SIZE]);
-  TestCoroutine cor3(3, &stacks[3][STACK_SIZE]);
-  TestCoroutine cor4(4, &stacks[4][STACK_SIZE]);
+  TestThread t1(1, &stacks[1][STACK_SIZE]);
+  TestThread t2(2, &stacks[2][STACK_SIZE]);
+  TestThread t3(3, &stacks[3][STACK_SIZE]);
+  TestThread t4(4, &stacks[4][STACK_SIZE]);
 
-  cor1.setKillPtr(&cor1); // kill self
-  cor2.setKillPtr(&cor3); // kill other
+  t1.setKillPtr(&t1); // kill self
+  t2.setKillPtr(&t3); // kill other
 
   // exit the current execution and start the threads
   scheduler.exit();
@@ -65,12 +60,12 @@ void Application::action()
   }
 }
 
-TestCoroutine::TestCoroutine(int threadId, void* tos) : Thread(tos), id(threadId)
+TestThread::TestThread(int threadId, void* tos) : Thread(tos), id(threadId)
 {
   scheduler.ready(*this);
 }
 
-void TestCoroutine::action() {
+void TestThread::action() {
   unsigned long cnt = 0;
   while (true) {
     if (this->killPtr && cnt >= 1000) {
@@ -88,6 +83,6 @@ void TestCoroutine::action() {
   }
 }
 
-void TestCoroutine::setKillPtr(Thread* that) {
+void TestThread::setKillPtr(Thread* that) {
   this->killPtr = that;
 }

@@ -9,6 +9,7 @@
 #include "user/appl.h"
 
 #include "guard/secure.h"
+#include "device/watch.h"
 
 
 int main()
@@ -42,6 +43,9 @@ int main()
 
   cpu.enable_int();
   keyboard.plugin();
+
+  Watch watch(20); // 20us timer
+  watch.windup();
 
   Application application;
 

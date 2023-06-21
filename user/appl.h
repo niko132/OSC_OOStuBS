@@ -23,13 +23,13 @@ public:
 	void action ();
 };
 
-class TestCoroutine : public Thread
+class TestThread : public Thread
 {
 public:
 	int id;
 	Thread* killPtr = nullptr;
 
-	TestCoroutine(int threadId, void* tos);
+	TestThread(int threadId, void* tos);
 
 	void action();
 	void setKillPtr(Thread* that);

@@ -24,8 +24,6 @@ private:
 
 public:
 	PIT(const PIT &copy) = delete; // prevent copying
-/* Add your code here */ 
-public:
 	PIT(int us) : ctrl_port(0x43), channel0_port(0x40) {
 		interval (us);
 	}
