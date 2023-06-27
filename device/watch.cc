@@ -12,7 +12,7 @@
 #include "device/watch.h"
 #include "machine/plugbox.h"
 #include "machine/pic.h"
-#include "syscall/guarded_scheduler.h"
+#include "syscall/guarded_organizer.h"
 
 void Watch::windup() {
     plugbox.assign(plugbox.timer, *this);
@@ -24,6 +24,6 @@ bool Watch::prologue() {
 }
 
 void Watch::epilogue() {
-    scheduler.Scheduler::resume();
+    organizer.Organizer::resume();
 }
 

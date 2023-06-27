@@ -30,7 +30,6 @@ void Scheduler::schedule() {
 void Scheduler::exit() {
     Entrant* entrant = (Entrant*)readyList.dequeue();
     if (entrant == nullptr) nothingHandler();
-
     Dispatcher::dispatch(*entrant);
 }
 
@@ -43,8 +42,8 @@ void Scheduler::kill(Entrant& that) {
 }
 
 void Scheduler::resume() {
-    Entrant& activeEntrant = (Entrant&)*active();
-    ready(activeEntrant);
+    Entrant* activeEntrant = (Entrant*)active();
+    ready(*activeEntrant);
     exit();
 }
 

@@ -5,11 +5,10 @@
 #include "device/keyboard.h"
 #include "machine/pic.h"
 #include "machine/cpu.h"
-#include "syscall/guarded_scheduler.h"
+#include "syscall/guarded_organizer.h"
 #include "user/appl.h"
 
 #include "guard/secure.h"
-#include "device/watch.h"
 
 
 int main()
@@ -44,14 +43,11 @@ int main()
   cpu.enable_int();
   keyboard.plugin();
 
-  Watch watch(20); // 20us timer
-  watch.windup();
-
   Application application;
 
   // run the non guarded scheduler to not enter the critical section again
-  scheduler.Scheduler::ready(application);
-  scheduler.schedule();
+  organizer.Organizer::ready(application);
+  organizer.schedule();
 
 	return 0;
 }

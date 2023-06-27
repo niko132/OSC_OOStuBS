@@ -18,8 +18,11 @@
 #include "machine/cpu.h"
 #include "guard/guard.h"
 #include "guard/secure.h"
-#include "syscall/guarded_scheduler.h"
+#include "syscall/guarded_organizer.h"
 #include "thread/entrant.h"
+#include "device/watch.h"
+
+#include "syscall/guarded_semaphore.h"
 
 /* GLOBAL VARIABLES */
 
@@ -29,6 +32,8 @@ const int STACK_SIZE = 64 * 1024; // 64kB
 
 char stacks[5][STACK_SIZE];
 char* mainStack = stacks[0];
+
+Guarded_Semaphore screen_sem(1);
 
 Application::Application() : Thread(&mainStack[STACK_SIZE]) {
 
@@ -47,8 +52,12 @@ void Application::action()
   t1.setKillPtr(&t1); // kill self
   t2.setKillPtr(&t3); // kill other
 
+  // CAUTION: 20us is not enough time for Virtual Box
+  Watch watch(20); // 20us timer
+  watch.windup();
+
   // exit the current execution and start the threads
-  scheduler.exit();
+  organizer.exit();
 
   // this code won't be executed - it's here to demonstrate that scheduler.exit() works
   {
@@ -62,23 +71,34 @@ void Application::action()
 
 TestThread::TestThread(int threadId, void* tos) : Thread(tos), id(threadId)
 {
-  scheduler.ready(*this);
+  organizer.ready(*this);
 }
 
 void TestThread::action() {
   unsigned long cnt = 0;
   while (true) {
     if (this->killPtr && cnt >= 1000) {
-      scheduler.kill(*killPtr);
+      organizer.kill(*killPtr);
     }
 
-    {
-      Secure secure;
-
-      kout.setPos(1, id);
-      kout << "Thread #" << dec << id << ": " << dec << cnt;
-      kout.flush();
+    // needed for VirtualBox cause otherwise the mutexed section is much longer than the
+    // non-mutexed section and the other threads would starve
+    /*
+    for (int i = 0; i < 1000000; i++) {
+      i = i + 1 - 2 + 1;
     }
+    */
+
+    screen_sem.wait();
+
+    kout.setPos(1, id);
+    kout << "Thread #" << dec << id << ": " << dec << cnt;
+    kout.flush();
+
+    screen_sem.signal();
+
+    // organizer.resume(); // TODO: can be used to allow fair scheduling (kinda no preemption)
+    
     cnt++;
   }
 }

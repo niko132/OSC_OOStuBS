@@ -9,4 +9,21 @@
 /* for a specific event.                                                     */
 /*****************************************************************************/
 
-/* Add your code here */ 
+#include "meeting/waitingroom.h"
+#include "thread/customer.h"
+
+#include "syscall/guarded_organizer.h"
+
+Waitingroom::~Waitingroom() {
+    Customer* customer = nullptr;
+    while ((customer = (Customer*)this->dequeue()) != nullptr) {
+        organizer.wakeup(*customer);
+    }
+}
+
+void Waitingroom::remove(Customer* customer) {
+    this->Queue::remove((Chain*)customer);
+
+    // this method does not call wakeup
+    // the removed customer should be woken up elswhere
+}

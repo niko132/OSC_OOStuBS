@@ -50,7 +50,8 @@ O_Stream& O_Stream::operator<< (unsigned long number) {
 
   while (divider > 0) {
     unsigned long digit = (number / divider) % numberBase;
-    put(toPrintableDigit(digit));
+    char c = toPrintableDigit(digit);
+    put(c);
     divider /= numberBase;
   }
   return *this;

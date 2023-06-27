@@ -11,14 +11,20 @@
 
 #ifndef __organizer_include__
 #define __organizer_include__
-/* Add your code here */ 
-class Organizer
-/* Add your code here */ 
+
+#include "thread/scheduler.h"
+#include "thread/customer.h"
+#include "meeting/waitingroom.h"
+
+class Organizer : public Scheduler
 {
 public:
 	Organizer(const Organizer &copy) = delete; // prevent copying
 	Organizer() {}
-/* Add your code here */ 
+
+	void block(Customer& customer, Waitingroom& waitingroom);
+	void wakeup(Customer& customer);
+	void kill(Customer& that);
 };
 
 #endif

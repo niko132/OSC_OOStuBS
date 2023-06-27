@@ -14,6 +14,7 @@
 #include "guard/gate.h"
 #include "guard/guard.h"
 
+#include "device/cgastr.h"
 #include "machine/cpu.h"
 
 
@@ -27,6 +28,11 @@ extern "C" void guardian (unsigned int slot);
 void guardian (unsigned int slot)
 {
   // call the routine for the specific interrupt
+
+  if (slot != plugbox.keyboard && slot != plugbox.timer) {
+    kout << " guardian: " << dec << slot << endl;
+  }
+
   Gate& gate = plugbox.report(slot);
   if (gate.prologue()) guard.relay(&gate);
 }

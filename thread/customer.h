@@ -12,15 +12,24 @@
 #ifndef __customer_include__
 #define __customer_include__
 
-/* Add your code here */ 
+#include "thread/entrant.h"
+#include "meeting/waitingroom.h"
 
-class Customer
-/* Add your code here */ 
+class Customer : public Entrant
 {
+private:
+	Waitingroom* waitingroom = nullptr;
 public:
 	Customer (const Customer &copy) = delete; // prevent copying
-private:
-/* Add your code here */ 
+	Customer(void* tos) : Entrant(tos), waitingroom(nullptr) { };
+
+	void waiting_in(Waitingroom *w) {
+		this->waitingroom = w;
+	};
+
+	Waitingroom* waiting_in() {
+		return this->waitingroom;
+	};
 };
 
 #endif

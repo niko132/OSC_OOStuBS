@@ -18,7 +18,7 @@
 class Scheduler :
 public Dispatcher
 {
-private:
+protected:
 	Queue readyList;
 
 	void nothingHandler();

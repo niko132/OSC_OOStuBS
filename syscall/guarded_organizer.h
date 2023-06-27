@@ -19,7 +19,13 @@ class Guarded_Organizer : public Organizer {
 public:
 	Guarded_Organizer() {}
 	Guarded_Organizer(const Guarded_Organizer &copy) = delete; // prevent copying
-/* Add your code here */ 
+
+	void ready(Thread& that);
+	void exit();
+	void kill(Thread& that);
+	void resume();
 };
+
+extern Guarded_Organizer organizer;
 
 #endif
