@@ -2,7 +2,7 @@
 #include "machine/keyctrl.h"
 
 
-#include "device/keyboard.h"
+#include "syscall/guarded_keyboard.h"
 #include "machine/pic.h"
 #include "machine/cpu.h"
 #include "syscall/guarded_organizer.h"

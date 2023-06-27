@@ -12,15 +12,17 @@
 #ifndef __Guarded_Keyboard_include__
 #define __Guarded_Keyboard_include__
 
-/* Add your code here */ 
+#include "device/keyboard.h"
 
-class Guarded_Keyboard
-/* Add your code here */ 
+class Guarded_Keyboard : public Keyboard
 {
 public:
 	Guarded_Keyboard(const Guarded_Keyboard &copy) = delete; // prevent copying
 	Guarded_Keyboard() {}
-/* Add your code here */ 
+
+	Key getKey();
 };
+
+extern Guarded_Keyboard keyboard;
 
 #endif

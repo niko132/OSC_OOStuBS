@@ -30,7 +30,7 @@ extern CGA_Stream kout;
 
 const int STACK_SIZE = 64 * 1024; // 64kB
 
-char stacks[5][STACK_SIZE];
+char stacks[6][STACK_SIZE];
 char* mainStack = stacks[0];
 
 Guarded_Semaphore screen_sem(1);
@@ -48,6 +48,7 @@ void Application::action()
   TestThread t2(2, &stacks[2][STACK_SIZE]);
   TestThread t3(3, &stacks[3][STACK_SIZE]);
   TestThread t4(4, &stacks[4][STACK_SIZE]);
+  KeyboardThread t5(6, &stacks[5][STACK_SIZE]);
 
   t1.setKillPtr(&t1); // kill self
   t2.setKillPtr(&t3); // kill other
@@ -105,4 +106,26 @@ void TestThread::action() {
 
 void TestThread::setKillPtr(Thread* that) {
   this->killPtr = that;
+}
+
+
+#include "syscall/guarded_keyboard.h"
+
+KeyboardThread::KeyboardThread(int threadId, void* tos) : Thread(tos), id(threadId), x(1), y(threadId) {
+  organizer.ready(*this);
+}
+
+void KeyboardThread::action() {
+  while (true) {
+    Key key = keyboard.getKey();
+
+    screen_sem.wait();
+
+    kout.setPos(x, y);
+    kout << key.ascii();
+    kout.flush();
+    kout.getPos(x, y);
+    
+    screen_sem.signal();
+  }
 }

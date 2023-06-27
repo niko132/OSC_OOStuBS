@@ -9,4 +9,12 @@
 /* keyboard.                                                                 */
 /*****************************************************************************/
 
-/* Add your code here */ 
+#include "syscall/guarded_keyboard.h"
+#include "guard/secure.h"
+
+Key Guarded_Keyboard::getKey() {
+    Secure secure;
+    return Keyboard::getKey();
+}
+
+Guarded_Keyboard keyboard;

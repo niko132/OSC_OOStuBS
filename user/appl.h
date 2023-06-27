@@ -35,4 +35,15 @@ public:
 	void setKillPtr(Thread* that);
 };
 
+class KeyboardThread : public Thread
+{
+public:
+	int id;
+	int x, y;
+
+	KeyboardThread(int threadId, void* tos);
+
+	void action();
+};
+
 #endif

@@ -16,6 +16,8 @@
 #include "machine/key.h"
 #include "machine/keyctrl.h"
 
+#include "meeting/semaphore.h"
+
 // a lock free ring buffer implementation to store keys
 class BoundedKeyBuffer {
 private:
@@ -62,6 +64,9 @@ private:
   BoundedKeyBuffer pressed_keys;
   int currentXPos, currentYPos;
 
+  BoundedKeyBuffer getKeyBuf;
+  Semaphore sem;
+
 public:
 	Keyboard();
 	Keyboard(const Keyboard &copy) = delete; // prevent copying
@@ -71,8 +76,8 @@ public:
 	bool prologue() override;
   void epilogue() override;
 
-};
+  Key getKey();
 
-extern Keyboard keyboard;
+};
 
 #endif
