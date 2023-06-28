@@ -20,7 +20,7 @@ private:
 	const IO_Port ctrl_port; // control register (W)
 	const IO_Port channel0_port; // output (R) and input (W) of channel0 timer
 
-	const float TIMER_FREQ = 1.19318; // MHz
+	const int TIMER_FREQ = 1193182; // ~1.2MHz
 
 public:
 	PIT(const PIT &copy) = delete; // prevent copying

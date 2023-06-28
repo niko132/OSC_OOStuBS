@@ -18,6 +18,9 @@
 #include "machine/pit.h"
 
 class Watch : public Gate, public PIT {
+private:
+	unsigned long cnt = 0;
+
 public:
 	// WATCH: Timer initialization, see PIT.
 	Watch(const Watch &copy) = delete; // prevent copying
@@ -34,5 +37,7 @@ public:
 	// EPILOGUE: This method triggers the process switch.
 	void epilogue();
 };
+
+extern Watch watch;
 
 #endif

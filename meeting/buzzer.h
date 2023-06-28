@@ -12,14 +12,23 @@
 #ifndef __Buzzer_include__
 #define __Buzzer_include__
 
-/* Add your code here */ 
+#include "meeting/waitingroom.h"
+#include "meeting/bell.h"
 
-class Buzzer
-/* Add your code here */ 
+class Buzzer : public Waitingroom, public Bell
 {
+private:
+	int timerMs = 0;
+
 public:
 	Buzzer(const Buzzer &copy) = delete; // prevent copying
-/* Add your code here */ 
+	Buzzer();
+	virtual ~Buzzer();
+
+	virtual void ring();
+	void set(int ms);
+	void reset();
+	void sleep();
 };
 
 #endif

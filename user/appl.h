@@ -12,6 +12,7 @@
 #define __application_include__
 
 #include "syscall/thread.h"
+#include "syscall/guarded_buzzer.h"
 
 class Application : public Thread
 {
@@ -33,6 +34,18 @@ public:
 
 	void action();
 	void setKillPtr(Thread* that);
+};
+
+class PeriodicThread : public Thread
+{
+public:
+	int id;
+	Guarded_Buzzer* buzzer;
+	bool mainBuzz;
+
+	PeriodicThread(int threadId, void* tos, Guarded_Buzzer* buzzer, bool mainBuzz);
+
+	void action();
 };
 
 class KeyboardThread : public Thread
