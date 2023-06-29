@@ -12,7 +12,11 @@
 #include "device/cgastr.h"
 #include "machine/cpu.h"
 
-Scheduler::Scheduler() {
+const int STACK_SIZE = 64 * 1024; // 64kB
+char idleStack[STACK_SIZE];
+char* idleStackEnd = &idleStack[STACK_SIZE];
+
+Scheduler::Scheduler() : idleThread(idleStackEnd) {
 
 }
 
@@ -29,7 +33,8 @@ void Scheduler::schedule() {
 
 void Scheduler::exit() {
     Entrant* entrant = (Entrant*)readyList.dequeue();
-    if (entrant == nullptr) nothingHandler();
+    if (entrant == nullptr) entrant = &idleThread;
+
     Dispatcher::dispatch(*entrant);
 }
 
@@ -43,7 +48,7 @@ void Scheduler::kill(Entrant& that) {
 
 void Scheduler::resume() {
     Entrant* activeEntrant = (Entrant*)active();
-    ready(*activeEntrant);
+    if (activeEntrant != &idleThread) ready(*activeEntrant);
     exit();
 }
 
@@ -53,4 +58,15 @@ void Scheduler::nothingHandler() {
     kout << "Nothing to schedule..." << endl;
     kout << "Stopping the execution!" << endl;
     cpu.halt();
+}
+
+
+IdleThread::IdleThread(void* tos) : Entrant(tos) {
+
+}
+
+void IdleThread::action() {
+    while (true) {
+        cpu.idle();
+    }
 }

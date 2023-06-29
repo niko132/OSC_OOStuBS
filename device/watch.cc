@@ -33,15 +33,10 @@ void Watch::epilogue() {
 // (1000us)
 // otherwise the threads/epilogues can't catch up and just get queued
 // while more and more interrupts get executed
-// CAUTION: VirtualBox seems to slow the timer down by 10x!!!
-
-// VMWare handles the timers correct
-// Use VMWare rather than VB!!!
 
 // Qemu works with a lower timer interval
 // (20us seems ok)
-// but qemu seems to ignore the concrete value and just fire the timer randomly
-// therefore no accurate time measurement is possible
+// but qemu has no exact time its delayed by a random amount
 
 // Real system needs to be tested
-Watch watch(1000);
+Watch watch(1000); // in emulator a value between 100 - 1000 seems ok

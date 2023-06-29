@@ -52,7 +52,7 @@ void Application::action()
   buzz3.set(2000);
 
   // prepare some threads
-  TestThread t1(1, &stacks[1][STACK_SIZE]);
+  // TestThread t1(1, &stacks[1][STACK_SIZE]);
   
   PeriodicThread t2(2, &stacks[2][STACK_SIZE], &buzz1, true);
   PeriodicThread t3(3, &stacks[3][STACK_SIZE], &buzz1, false);
@@ -139,7 +139,7 @@ void PeriodicThread::action() {
     screen_sem.wait();
 
     kout.setPos(1, id);
-    kout << "Thread #" << dec << id << ": sleep - " << dec << cnt++;
+    kout << "Thread #" << dec << id << ": sleep - " << dec << ++cnt;
     kout.flush();
 
     screen_sem.signal();

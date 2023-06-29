@@ -37,20 +37,22 @@ void Bellringer::job(Bell* bell, int ticks) {
         Bell* first = (Bell*)this->first();
         if (ticks < first->wait()) {
             bell->wait(ticks);
-            insert_first(bell);
             first->wait(first->wait() - ticks);
+            insert_first(bell);
         } else {
-            Bell* after = first;
-            int cumTicks = first->wait();
-            while (after->next != nullptr) {
-                Bell* next = (Bell*)after->next;
-                int nextTicks = cumTicks + next->wait();
+            Bell* before = first;
+            Bell* after = nullptr;
+            int beforeAbs = first->wait();
+            while (before->next != nullptr) {
+                after = (Bell*)before->next;
+                int nextTicks = beforeAbs + after->wait();
                 if (nextTicks > ticks) break;
-                after = next;
-                cumTicks = nextTicks;
+                before = after;
+                beforeAbs = nextTicks;
             }
-            bell->wait(ticks - after->wait());
-            insert_after(after, bell);
+            bell->wait(ticks - beforeAbs);
+            if (after != nullptr) after->wait(after->wait() - bell->wait());
+            insert_after(before, bell);
         }
     }
 }

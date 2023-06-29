@@ -15,9 +15,21 @@
 #include "object/queue.h"
 #include "thread/entrant.h"
 
+class IdleThread : public Entrant
+{
+public:
+	IdleThread(const IdleThread &copy) = delete; // prevent copying
+	IdleThread(void* tos);
+
+	void action();
+};
+
 class Scheduler :
 public Dispatcher
 {
+private:
+	IdleThread idleThread;
+
 protected:
 	Queue readyList;
 
