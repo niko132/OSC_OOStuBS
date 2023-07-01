@@ -24,16 +24,27 @@
 #include "syscall/guarded_semaphore.h"
 #include "syscall/guarded_keyboard.h"
 
+
+#include "graphics/vga.h"
+#include "graphics/videos.h"
+
+#define PL_MPEG_IMPLEMENTATION
+#include "graphics/pl_mpeg.h"
+
 /* GLOBAL VARIABLES */
 
 extern CGA_Stream kout;
 
 const int STACK_SIZE = 64 * 1024; // 64kB
 
-char stacks[20][STACK_SIZE];
+char stacks[30][STACK_SIZE];
 char* mainStack = stacks[0];
 
 Guarded_Semaphore screen_sem(1);
+
+VGA vga;
+plm_t plm;
+unsigned char rgbBuffer[320 * 200 * 3];
 
 Application::Application() : Thread(&mainStack[STACK_SIZE]) {
 
@@ -43,9 +54,55 @@ void Application::action()
 {
   kout.clear();
 
+  vga.setMode(320, 200, 8);
+  vga.fillRect(0, 0, 320, 200, 0);
+  vga.loadDefaultPalette();
+
+  /*
+  for (int y = 0; y < 200; y++) {
+    for (int x = 0; x < 320; x++) {
+      int sX = x / 10;
+      int sY = y / 10;
+      int index = sX + sY * (320 / 10);
+      vga.putPixel(x, y, index);
+    }
+  }
+  cpu.halt();
+  */
+
+  plm_create_with_memory(&plm, (uint8_t*)LECTURE_1, sizeof(LECTURE_1));
+  plm_set_audio_enabled(&plm, false);
+
+  plm_frame_t *frame = nullptr;
+  for (int i = 1; frame = plm_decode_video(&plm); i++) {
+    plm_frame_to_rgb(frame, rgbBuffer, 320 * 3);
+
+    // TODO: display
+    for (int y = 0; y < 200; y++) {
+      for (int x = 0; x < 320; x++) {
+        int colorIndex = 0;
+        unsigned char r = rgbBuffer[(y * 320 + x) * 3];
+        unsigned char g = rgbBuffer[(y * 320 + x) * 3 + 1];
+        unsigned char b = rgbBuffer[(y * 320 + x) * 3 + 2];
+
+        /*
+        if (r > 127 && g > 127 && b > 127) colorIndex = 0x3F; // white
+        else if (r > g && r > b) colorIndex = 0x04; // red
+        else if (g > r && g > b) colorIndex = 0x02; // green
+        else if (b > r && b > g) colorIndex = 0x01; // blue
+        else colorIndex = 0x00;
+
+        vga.putPixel(x, y, colorIndex);
+        */
+        vga.putPixel(x, y, r, g, b);
+      }
+    }
+  }
+
   Guarded_Buzzer buzz1;
   Guarded_Buzzer buzz2;
   Guarded_Buzzer buzz3;
+  Guarded_Buzzer buzz4;
 
   buzz1.set(500);
   buzz2.set(1000);
@@ -72,6 +129,10 @@ void Application::action()
   PeriodicThread t15(15, &stacks[15][STACK_SIZE], &buzz3, false);
   
   KeyboardThread t17(17, &stacks[17][STACK_SIZE]);
+
+  VgaThread t18(18, &stacks[18][STACK_SIZE], &buzz1, false, 0, 0, 50, 50);
+  VgaThread t19(19, &stacks[19][STACK_SIZE], &buzz2, false, 100, 0, 50, 50);
+  VgaThread t20(20, &stacks[20][STACK_SIZE], &buzz3, false, 200, 0, 50, 50);
 
   // enable preemptive scheduling
   watch.windup();
@@ -143,6 +204,26 @@ void PeriodicThread::action() {
     kout.flush();
 
     screen_sem.signal();
+  }
+}
+
+
+VgaThread::VgaThread(int threadId, void* tos, Guarded_Buzzer* buzzer, bool mainBuzz, int x, int y, int width, int height) :
+  Thread(tos), id(threadId), buzzer(buzzer), mainBuzz(mainBuzz), x(x), y(y), width(width), height(height)
+{
+  organizer.ready(*this);
+}
+
+void VgaThread::action() {
+  int index = 0;
+
+  while (true) {
+    if (mainBuzz) buzzer->reset();
+    buzzer->sleep();
+
+    vga.fillRect(x, y, width, height, index);
+
+    index = (index + 1) % 64;
   }
 }
 

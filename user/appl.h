@@ -48,6 +48,20 @@ public:
 	void action();
 };
 
+class VgaThread : public Thread
+{
+public:
+	int id;
+	Guarded_Buzzer* buzzer;
+	bool mainBuzz;
+
+	int x, y, width, height;
+
+	VgaThread(int threadId, void* tos, Guarded_Buzzer* buzzer, bool mainBuzz, int x, int y, int width, int height);
+
+	void action();
+};
+
 class KeyboardThread : public Thread
 {
 public:
