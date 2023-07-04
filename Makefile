@@ -24,7 +24,7 @@
 STARTUP_SOURCE = ./startup.asm
 CC_SOURCES = $(shell find . -name "*.cc")
 C_SOURCES = $(shell find . -name "*.c")
-ASM_SOURCES = $(shell find ./machine -name "*.asm")
+ASM_SOURCES = $(shell find ./machine ./sound -name "*.asm")
 
 # build settings
 #
@@ -172,6 +172,12 @@ bootdisk: $(OBJDIR)/bootdisk.iso
 
 qemu: $(OBJDIR)/bootdisk.iso
 	$(QEMU) -drive file=build/bootdisk.iso,format=raw -k en-us
+
+# --------------------------------------------------------------------------
+# 'qemu' runs the QEMU emulator with the system with sound support
+
+qemu-spk: $(OBJDIR)/bootdisk.iso
+	$(QEMU) -drive file=build/bootdisk.iso,format=raw -k en-us -audiodev pa,id=snd0 -machine pcspk-audiodev=snd0
 
 # --------------------------------------------------------------------------
 # 'qemu-smp' runs QEMU in SMP (symmetric multi-processing) mode with 2 CPUs

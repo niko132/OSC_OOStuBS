@@ -31,7 +31,9 @@ private:
 	const IO_Port pelIndexPort;
 	const IO_Port pelDataPort;
 
-	unsigned char* frameBufferSegment = nullptr;
+	unsigned char* segmentStartAddress = nullptr;
+	unsigned char* segmentEndAddress = nullptr;
+	unsigned char* currentPixelAddress = nullptr;
 
 	void writeRegisters(unsigned char* registers);
 	unsigned char* getFrameBufferSegment();
@@ -47,6 +49,11 @@ public:
 	
 	void putPixel(unsigned int x, unsigned int y, unsigned char r, unsigned char g, unsigned char b);
 	void putPixel(unsigned int x, unsigned int y, unsigned char colorIndex);
+
+	void putPixelFast(unsigned char r, unsigned char g, unsigned char b) {
+		*currentPixelAddress = getColorIndex(r, g, b);
+		if (++currentPixelAddress >= segmentEndAddress) currentPixelAddress = segmentStartAddress;
+	}
 
 	void fillLine(unsigned int x, unsigned int y, unsigned int width, unsigned char colorIndex);
 	void fillRect(unsigned int x, unsigned int y, unsigned int width, unsigned int height, unsigned char colorIndex);

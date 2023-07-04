@@ -15,6 +15,8 @@
 #include "syscall/guarded_organizer.h"
 #include "meeting/bellringer.h"
 
+#include "sound/sound.h"
+
 void Watch::windup() {
     plugbox.assign(plugbox.timer, *this);
     pic.allow(PIC::timer);
@@ -25,8 +27,10 @@ bool Watch::prologue() {
 }
 
 void Watch::epilogue() {
-    bellringer.check();
-    organizer.Organizer::resume();
+    sound.play_buffer();
+
+    // bellringer.check();
+    // organizer.Organizer::resume();
 }
 
 // VirtualBox needs a rather high timer value
@@ -39,4 +43,6 @@ void Watch::epilogue() {
 // but qemu has no exact time its delayed by a random amount
 
 // Real system needs to be tested
-Watch watch(1000); // in emulator a value between 100 - 1000 seems ok
+// Watch watch(1000); // in emulator a value between 100 - 1000 seems ok
+
+Watch watch(44); // for sound

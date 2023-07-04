@@ -26,10 +26,14 @@
 
 
 #include "graphics/vga.h"
-#include "graphics/videos.h"
+#include "graphics/rick.h"
 
 #define PL_MPEG_IMPLEMENTATION
 #include "graphics/pl_mpeg.h"
+
+#include "sound/sound.h"
+
+#include "sound/player.h"
 
 /* GLOBAL VARIABLES */
 
@@ -54,9 +58,16 @@ void Application::action()
 {
   kout.clear();
 
+  sound.attach_to_timer();
+
+
+  // sound.play_sound(500);
+
+  /*
   vga.setMode(320, 200, 8);
   vga.fillRect(0, 0, 320, 200, 0);
   vga.loadDefaultPalette();
+  */
 
   /*
   for (int y = 0; y < 200; y++) {
@@ -70,34 +81,23 @@ void Application::action()
   cpu.halt();
   */
 
-  plm_create_with_memory(&plm, (uint8_t*)LECTURE_1, sizeof(LECTURE_1));
+  /*
+  plm_create_with_memory(&plm, (uint8_t*)RICK_1, sizeof(RICK_1));
   plm_set_audio_enabled(&plm, false);
 
   plm_frame_t *frame = nullptr;
   for (int i = 1; frame = plm_decode_video(&plm); i++) {
     plm_frame_to_rgb(frame, rgbBuffer, 320 * 3);
 
-    // TODO: display
-    for (int y = 0; y < 200; y++) {
-      for (int x = 0; x < 320; x++) {
-        int colorIndex = 0;
-        unsigned char r = rgbBuffer[(y * 320 + x) * 3];
-        unsigned char g = rgbBuffer[(y * 320 + x) * 3 + 1];
-        unsigned char b = rgbBuffer[(y * 320 + x) * 3 + 2];
+    for (int j = 0; j < 320 * 200; j++) {
+      unsigned char r = rgbBuffer[j * 3];
+      unsigned char g = rgbBuffer[j * 3 + 1];
+      unsigned char b = rgbBuffer[j * 3 + 2];
 
-        /*
-        if (r > 127 && g > 127 && b > 127) colorIndex = 0x3F; // white
-        else if (r > g && r > b) colorIndex = 0x04; // red
-        else if (g > r && g > b) colorIndex = 0x02; // green
-        else if (b > r && b > g) colorIndex = 0x01; // blue
-        else colorIndex = 0x00;
-
-        vga.putPixel(x, y, colorIndex);
-        */
-        vga.putPixel(x, y, r, g, b);
-      }
+      vga.putPixelFast(r, g, b);
     }
   }
+  */
 
   Guarded_Buzzer buzz1;
   Guarded_Buzzer buzz2;
@@ -111,6 +111,7 @@ void Application::action()
   // prepare some threads
   // TestThread t1(1, &stacks[1][STACK_SIZE]);
   
+  /*
   PeriodicThread t2(2, &stacks[2][STACK_SIZE], &buzz1, true);
   PeriodicThread t3(3, &stacks[3][STACK_SIZE], &buzz1, false);
   PeriodicThread t4(4, &stacks[4][STACK_SIZE], &buzz1, false);
@@ -127,12 +128,15 @@ void Application::action()
   PeriodicThread t13(13, &stacks[13][STACK_SIZE], &buzz3, true);
   PeriodicThread t14(14, &stacks[14][STACK_SIZE], &buzz3, false);
   PeriodicThread t15(15, &stacks[15][STACK_SIZE], &buzz3, false);
+  */
   
   KeyboardThread t17(17, &stacks[17][STACK_SIZE]);
 
+  /*
   VgaThread t18(18, &stacks[18][STACK_SIZE], &buzz1, false, 0, 0, 50, 50);
   VgaThread t19(19, &stacks[19][STACK_SIZE], &buzz2, false, 100, 0, 50, 50);
   VgaThread t20(20, &stacks[20][STACK_SIZE], &buzz3, false, 200, 0, 50, 50);
+  */
 
   // enable preemptive scheduling
   watch.windup();
@@ -236,10 +240,19 @@ void KeyboardThread::action() {
   while (true) {
     Key key = keyboard.getKey();
 
+    if (key.scancode() == 72) {
+      test_freq += 10;
+    } else if (key.scancode() == 80) {
+      test_freq -= 10;
+    }
+
+    kout << dec << (int)test_freq << endl;
+    if (true) continue;
+
     screen_sem.wait();
 
     kout.setPos(x, y);
-    kout << key.ascii();
+    kout << key.ascii() << " " << dec << (int)key.scancode() << " ";
     kout.flush();
     kout.getPos(x, y);
     

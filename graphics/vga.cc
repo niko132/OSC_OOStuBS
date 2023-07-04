@@ -101,7 +101,9 @@ bool VGA::setMode(unsigned int width, unsigned int height, unsigned int depth) {
 
     writeRegisters(g_320x200x256);
 
-    frameBufferSegment = getFrameBufferSegment();
+    segmentStartAddress = getFrameBufferSegment();
+    segmentEndAddress = segmentStartAddress + 320 * 200;
+    currentPixelAddress = segmentStartAddress;
 
     return true;
 }
@@ -121,7 +123,7 @@ unsigned char* VGA::getFrameBufferSegment() {
 void VGA::putPixel(unsigned int x, unsigned int y, unsigned char colorIndex) {
     if (320 <= x || 200 <= y) return;
 
-    unsigned char* pixelAddress = frameBufferSegment + 320 * y + x;
+    unsigned char* pixelAddress = segmentStartAddress + 320 * y + x;
     *pixelAddress = colorIndex;
 }
 
@@ -151,7 +153,7 @@ void VGA::fillLine(unsigned int x, unsigned int y, unsigned int width, unsigned 
     if (y >= 200) y = 199;
     if (x + width >= 320) width = 320 - x;
 
-    unsigned char* pixelAddress = frameBufferSegment + 320 * y + x;
+    unsigned char* pixelAddress = segmentStartAddress + 320 * y + x;
     memset(pixelAddress, colorIndex, width);
 }
 
