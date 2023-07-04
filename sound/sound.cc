@@ -36,7 +36,7 @@ void Sound::play_buffer() {
 
     unsigned char val = 53 * byte / 255;
 
-    ctrl_port.outb(0x96); // single interrupt on channel2
+    ctrl_port.outb(0xb0); // single interrupt on channel2
 
     // low byte then high byte
     // let the outb() function handle the masking
@@ -48,6 +48,7 @@ void Sound::play_buffer() {
     // channel2_port.outb((test_freq >> 8) & 0xff);
 
     channel2_port.outb(val); // only write lower byte
+    channel2_port.outb(0x00);
 
     // kout << "test: " << dec << (int)byte << endl;
 }
