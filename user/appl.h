@@ -14,6 +14,8 @@
 #include "syscall/thread.h"
 #include "syscall/guarded_buzzer.h"
 
+#include "graphics/pl_mpeg.h"
+
 class Application : public Thread
 {
 
@@ -22,44 +24,6 @@ public:
   	Application();
 
 	void action ();
-};
-
-class TestThread : public Thread
-{
-public:
-	int id;
-	Thread* killPtr = nullptr;
-
-	TestThread(int threadId, void* tos);
-
-	void action();
-	void setKillPtr(Thread* that);
-};
-
-class PeriodicThread : public Thread
-{
-public:
-	int id;
-	Guarded_Buzzer* buzzer;
-	bool mainBuzz;
-
-	PeriodicThread(int threadId, void* tos, Guarded_Buzzer* buzzer, bool mainBuzz);
-
-	void action();
-};
-
-class VgaThread : public Thread
-{
-public:
-	int id;
-	Guarded_Buzzer* buzzer;
-	bool mainBuzz;
-
-	int x, y, width, height;
-
-	VgaThread(int threadId, void* tos, Guarded_Buzzer* buzzer, bool mainBuzz, int x, int y, int width, int height);
-
-	void action();
 };
 
 class KeyboardThread : public Thread

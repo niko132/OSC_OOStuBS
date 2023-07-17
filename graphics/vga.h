@@ -45,14 +45,27 @@ public:
 	bool supportsMode(unsigned int width, unsigned int height, unsigned int depth);
 	bool setMode(unsigned int width, unsigned int height, unsigned int depth);
 
-	unsigned char getColorIndex(unsigned char r, unsigned char g, unsigned char b);
+	inline unsigned char getColorIndex(unsigned char r, unsigned char g, unsigned char b) {
+		unsigned char rVal = r / (255 / 3);
+		unsigned char gVal = g / (255 / 7);
+		unsigned char bVal = b / (255 / 7);
+		
+		return (bVal & 0x07) + ((gVal & 0x07) << 3) + ((rVal & 0x03) << 6);
+	}
 	
 	void putPixel(unsigned int x, unsigned int y, unsigned char r, unsigned char g, unsigned char b);
 	void putPixel(unsigned int x, unsigned int y, unsigned char colorIndex);
 
-	void putPixelFast(unsigned char r, unsigned char g, unsigned char b) {
-		*currentPixelAddress = getColorIndex(r, g, b);
-		if (++currentPixelAddress >= segmentEndAddress) currentPixelAddress = segmentStartAddress;
+	inline void putPixelFast(unsigned char r, unsigned char g, unsigned char b) {
+		*(currentPixelAddress++) = getColorIndex(r, g, b);
+	}
+
+	inline void putPixelFast(unsigned char colorIndex) {
+		*(currentPixelAddress++) = colorIndex;
+	}
+
+	inline void resetFastMode() {
+		currentPixelAddress = segmentStartAddress;
 	}
 
 	void fillLine(unsigned int x, unsigned int y, unsigned int width, unsigned char colorIndex);
@@ -60,6 +73,9 @@ public:
 
 	void setColor(unsigned char index, unsigned char r, unsigned char g, unsigned char b);
 	void loadDefaultPalette();
+
+	void writeText(int x, int y, unsigned char* text);
+	void writeChar(int x, int y, unsigned char c);
 };
 
 #endif

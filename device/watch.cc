@@ -15,8 +15,6 @@
 #include "syscall/guarded_organizer.h"
 #include "meeting/bellringer.h"
 
-#include "sound/sound.h"
-
 void Watch::windup() {
     plugbox.assign(plugbox.timer, *this);
     pic.allow(PIC::timer);
@@ -43,4 +41,4 @@ void Watch::epilogue() {
 // Real system needs to be tested
 // Watch watch(1000); // in emulator a value between 100 - 1000 seems ok
 
-Watch watch(44); // for sound
+Watch watch(50); // for sound

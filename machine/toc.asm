@@ -56,7 +56,7 @@ toc_switch:
     mov     [rdi + rsp_offset], rsp
 
 ; load registers from regs_then
-    mov     rbx, [rsi + rbp_offset]
+    mov     rbx, [rsi + rbx_offset]
     mov     r12, [rsi + r12_offset]
     mov     r13, [rsi + r13_offset]
     mov     r14, [rsi + r14_offset]

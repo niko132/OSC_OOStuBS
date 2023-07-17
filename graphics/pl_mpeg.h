@@ -244,7 +244,7 @@ typedef void(*plm_video_decode_callback)
 // The `count` is always PLM_AUDIO_SAMPLES_PER_FRAME and just there for
 // convenience.
 
-#define PLM_AUDIO_SAMPLES_PER_FRAME 1152
+#define PLM_AUDIO_SAMPLES_PER_FRAME 1764 // with 44100Hz we get 25 updates per second // was 1152
 #define PLM_AUDIO_SEPARATE_CHANNELS
 
 typedef struct {
@@ -451,11 +451,11 @@ plm_frame_t *plm_seek_frame(plm_t *self, long time_ms, int seek_exact);
 // The default size for buffers created from files or by the high-level API
 
 #ifndef PLM_BUFFER_DEFAULT_SIZE
-#define PLM_BUFFER_DEFAULT_SIZE (128 * 1024 * 5) // TODO: add * 5 cause otherwise the buffer is to small to hold a whole frame
+#define PLM_BUFFER_DEFAULT_SIZE (128 * 1024 * 10) // TODO: add * 10 cause otherwise the buffer is to small to hold a whole frame
 #endif
 
-uint8_t video_buf[PLM_BUFFER_DEFAULT_SIZE];
-uint8_t audio_buf[PLM_BUFFER_DEFAULT_SIZE];
+static uint8_t video_buf[PLM_BUFFER_DEFAULT_SIZE];
+static uint8_t audio_buf[PLM_BUFFER_DEFAULT_SIZE];
 
 
 // Create a buffer instance with a pointer to memory as source. This assumes

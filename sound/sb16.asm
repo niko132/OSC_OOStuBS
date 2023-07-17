@@ -44,7 +44,7 @@ programm_sb:
     out dx, al      ; set the time constant
 
     mov dx, 0x22C
-    mov al, 233     ; was 131
+    mov al, 210     ; was 233, 131
     out dx, al      ; mono @ 8000Hz
 
     mov dx, 0x22C
