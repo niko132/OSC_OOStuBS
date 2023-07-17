@@ -245,6 +245,7 @@ typedef void(*plm_video_decode_callback)
 // convenience.
 
 #define PLM_AUDIO_SAMPLES_PER_FRAME 1152
+#define PLM_AUDIO_SEPARATE_CHANNELS
 
 typedef struct {
 	long timeMs;

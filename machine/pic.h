@@ -28,7 +28,7 @@ private:
 
 public:
 	// status-register bits
-	enum { timer = 0x00, keyboard = 0x01 };
+	enum { timer = 0x00, keyboard = 0x01, sb16 = 0x05 };
 
 	PIC(const PIC &copy) = delete; // prevent copying
 	PIC();

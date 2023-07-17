@@ -27,10 +27,8 @@ bool Watch::prologue() {
 }
 
 void Watch::epilogue() {
-    sound.play_buffer();
-
-    // bellringer.check();
-    // organizer.Organizer::resume();
+    bellringer.check();
+    organizer.Organizer::resume();
 }
 
 // VirtualBox needs a rather high timer value

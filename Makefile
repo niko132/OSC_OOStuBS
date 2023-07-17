@@ -174,10 +174,16 @@ qemu: $(OBJDIR)/bootdisk.iso
 	$(QEMU) -drive file=build/bootdisk.iso,format=raw -k en-us
 
 # --------------------------------------------------------------------------
-# 'qemu' runs the QEMU emulator with the system with sound support
+# 'qemu-spk' runs the QEMU emulator with the system with sound support
 
 qemu-spk: $(OBJDIR)/bootdisk.iso
 	$(QEMU) -drive file=build/bootdisk.iso,format=raw -k en-us -audiodev pa,id=snd0 -machine pcspk-audiodev=snd0
+
+# --------------------------------------------------------------------------
+# 'qemu-spk1' runs the QEMU emulator with the system with legacy sound support
+
+qemu-spk1: $(OBJDIR)/bootdisk.iso
+	$(QEMU) -drive file=build/bootdisk.iso,format=raw -k en-us -device sb16
 
 # --------------------------------------------------------------------------
 # 'qemu-smp' runs QEMU in SMP (symmetric multi-processing) mode with 2 CPUs

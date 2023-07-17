@@ -202,6 +202,37 @@ fill_tables3_done:
 ;
 
 longmode_start:
+					; SB16 DMA initialization
+	mov dx, 0x0A
+	mov al, 5
+	out dx, al		; disable channel 1
+	mov dx, 0x0C
+	mov al, 1
+	out dx, al		; flip flop
+	mov dx, 0x0B
+	mov al, 0x49
+	out dx, al		; transfer mode
+	mov dx, 0x83
+	mov al, 0x01
+	out dx, al		; PAGE OF MEMORY LOCATION
+	mov dx, 0x02
+	mov al, 0x00
+	out dx, al		; LOW BYTE OF MEMORY LOCATION
+	mov dx, 0x02
+	mov al, 0x00
+	out dx, al		; HIGH BYTE OF MEMORY LOCATION
+	mov dx, 0x03
+	mov al, 0x00
+	out dx, al		; LOW BYTE OF COUNT (8kB)
+	mov dx, 0x03
+	mov al, 0x20
+	out dx, al		; HIGH BYTE OF COUNT (8kB)
+	mov dx, 0x0A
+	mov al, 1
+	out dx, al		; enable channel 1
+					; DMA is now available at address 0x100000 with 8kB
+
+longmode_start_start:
 [BITS 64]
 	; clear BSS
 	mov    rdi, ___BSS_START__

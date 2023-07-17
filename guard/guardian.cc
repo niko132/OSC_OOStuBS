@@ -29,7 +29,7 @@ void guardian (unsigned int slot)
 {
   // call the routine for the specific interrupt
 
-  if (slot != plugbox.keyboard && slot != plugbox.timer) {
+  if (slot != plugbox.keyboard && slot != plugbox.timer && slot != plugbox.sb16) {
     kout << " guardian: " << dec << slot << endl;
   }
 

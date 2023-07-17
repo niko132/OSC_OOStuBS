@@ -22,6 +22,8 @@ public:
 	const unsigned short timer = 32;
 	const unsigned short keyboard = 33;
 
+	const unsigned short sb16 = 37;
+
 	void assign (unsigned int slot, Gate& gate);
 	Gate& report (unsigned int slot);
 

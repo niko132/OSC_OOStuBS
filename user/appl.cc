@@ -35,6 +35,9 @@
 
 #include "sound/player.h"
 
+#include "sound/sb16.h"
+#include "machine/pic.h"
+
 /* GLOBAL VARIABLES */
 
 extern CGA_Stream kout;
@@ -54,20 +57,50 @@ Application::Application() : Thread(&mainStack[STACK_SIZE]) {
 
 }
 
+void app_on_video(plm_t *plm, plm_frame_t *frame, void *obj) {
+  plm_frame_to_rgb(frame, rgbBuffer, 320 * 3);
+
+  for (int j = 0; j < 320 * 200; j += 4) {
+    unsigned char r = rgbBuffer[j * 3];
+    unsigned char g = rgbBuffer[j * 3 + 1];
+    unsigned char b = rgbBuffer[j * 3 + 2];
+
+    vga.putPixelFast(r, g, b);
+  }
+}
+
+unsigned char sample_buf[1152];
+void app_on_audio(plm_t *plm, plm_samples_t *samples, void *obj) {
+  for (int j = 0; j < 1152; j++) {
+    sample_buf[j] = 127 + 127 * samples->left[j];
+  }
+
+  sb16.addSamples(sample_buf, 1152);
+}
+
 void Application::action()
 {
   kout.clear();
 
-  sound.attach_to_timer();
+  kout << "Test" << endl;
+
+  sb16.windup();
+  sb16.reset();
+  sb16.programm();
+
+  kout << "programmed" << endl;
+
+
+  // sound.attach_to_timer();
 
 
   // sound.play_sound(500);
 
-  /*
+  
   vga.setMode(320, 200, 8);
   vga.fillRect(0, 0, 320, 200, 0);
   vga.loadDefaultPalette();
-  */
+  
 
   /*
   for (int y = 0; y < 200; y++) {
@@ -97,7 +130,32 @@ void Application::action()
       vga.putPixelFast(r, g, b);
     }
   }
+
+  plm_create_with_memory(&plm, (uint8_t*)RICK_1, sizeof(RICK_1));
+  plm_set_audio_enabled(&plm, true);
+
+  plm_samples_t *audio = nullptr;
+  unsigned char audio_buf[1152];
+  for (int i = 1; audio = plm_decode_audio(&plm); i++) {
+    for (int j = 0; j < 1152; j++) {
+      audio_buf[j] = 127 + 127 * audio->left[j];
+    }
+
+    sb16.addSamples(audio_buf, 1152);
+  }
   */
+
+  // plm_create_with_memory(&plm, (uint8_t*)RICK_1, sizeof(RICK_1));
+  plm_create_with_memory(&plm, (uint8_t*)RICK_1, sizeof(RICK_1));
+  plm_set_video_decode_callback(&plm, app_on_video, this);
+  plm_set_audio_decode_callback(&plm, app_on_audio, this);
+  plm_set_loop(&plm, true);
+  plm_set_audio_enabled(&plm, true);
+  plm_set_audio_stream(&plm, 0);
+
+  while (true) {
+    plm_decode(&plm, 100);
+  }
 
   Guarded_Buzzer buzz1;
   Guarded_Buzzer buzz2;
@@ -239,15 +297,6 @@ KeyboardThread::KeyboardThread(int threadId, void* tos) : Thread(tos), id(thread
 void KeyboardThread::action() {
   while (true) {
     Key key = keyboard.getKey();
-
-    if (key.scancode() == 72) {
-      test_freq += 10;
-    } else if (key.scancode() == 80) {
-      test_freq -= 10;
-    }
-
-    kout << dec << (int)test_freq << endl;
-    if (true) continue;
 
     screen_sem.wait();
 
