@@ -1,3 +1,5 @@
+// Taken from https://github.com/phoboslab/pl_mpeg. Big thanks!
+
 /*
 PL_MPEG - MPEG1 Video decoder, MP2 Audio decoder, MPEG-PS demuxer
 
