@@ -20,6 +20,10 @@ This option just adds the following arg to the qemu executable:
 ```
 -device sb16
 ```
+**Unfortunately this will not activate the speaker. For some reason you need to run it with sudo privileges to make the speaker work!!!**
+```
+sudo make qemu-spk
+```
 
 ## Usage
 Once bootet, the player shows a menu where u can choose between the two video files. You select the video using the Keys `1` or `2` on your keyboard.
